@@ -7,10 +7,8 @@ public sealed class MyClient : MonoBehaviour
 {
     private NetworkClient _client;
     private NetworkIdentity _networkStateEntityProtoType;   
-    public  clientState _clientState { get; private set; }
-    public CTRL_Player playerController;
-
-
+    public static clientState _clientState { get; private set; }
+    //public CTRL_Player playerController;
     void Start()
     {
         //on client, this isn't required but is nice for testing.
@@ -22,7 +20,6 @@ public sealed class MyClient : MonoBehaviour
         //
         
     }   
-
     public void ConnectToServer()
     {
         if (!(_clientState == clientState.disconnect)) { return; }
@@ -48,15 +45,11 @@ public sealed class MyClient : MonoBehaviour
         //throw new Exception("L'action disconnect n'est pas corretement implémenté : brutal ! Il faut envoyer un message");
         gameObject.name = "MNG_Client";
     }
-
-
-
     private void OnDespawnEntity(GameObject go)
     {
         print("(Client) OnDespawnEntity");
         Destroy(go);
     }
-
     private void OnClientConnected(NetworkMessage netMsg)
     {
         print("(Client) OnClientConnected");
@@ -68,7 +61,6 @@ public sealed class MyClient : MonoBehaviour
         Main_Canvas.set_switchConnectButton(false);
         gameObject.name = "MNG_Client:Connected";
     }
-
     private void OnClientDisconnected(NetworkMessage netMsg)
     {
         print("(Client) OnClientDisconnected (SERVER HAS SHUTDOWN ?)");
@@ -84,11 +76,8 @@ public sealed class MyClient : MonoBehaviour
         networkEntity.transform.SetParent(this.transform);
         return networkEntity.gameObject;
     }
-
     public void OnPlayerConnected(NetworkPlayer player)
     {
         Debug.Log("Player[" + player.externalIP + "] connected from " + player.ipAddress + ":" + player.port);
     }
-
-
 }

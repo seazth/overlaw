@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Char
   - NetworkEntity
+  - MP_Interactable
   layers:
   - Default
   - TransparentFX
@@ -15,7 +16,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - EntityServer
   - 
   - 
   - 

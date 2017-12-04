@@ -35,7 +35,7 @@ public class Main_Canvas : MonoBehaviour {
         MNG_GameManager.mainInstance.inMenu = val;
     }
     public static void set_WorldCamera(Camera camera) { self.GetComponent<Canvas>().worldCamera = camera; }
-    public static void show_Crosshair(bool val){self.go_CrossAir.SetActive(!val);}
+    public static void show_Crosshair(bool val){self.go_CrossAir.SetActive(val);}
     public static void add_serverlog(string val) { self.ui_serverconsole.text = "> "+val+"\n"+ self.ui_serverconsole.text; }
     public static void set_ClientsInfo(string val) { self.ui_text_clientsconnected.text = val; }
     public static void set_switchConnectButton(bool val) { self.go_btn_connect.GetComponent<Button>().interactable = val; self.go_btn_disconnect.GetComponent<Button>().interactable = !val; }

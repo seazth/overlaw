@@ -12,7 +12,7 @@ public class CTRL_Player : MonoBehaviour
     {
         go_ControlledActor = actor;
         //create&setCamera
-        cam_PlayerCamera = GameObject.Instantiate(GlobalAssets.mainInstance.gop_playerCameraForDude, go_ControlledActor.transform, false)
+        /*cam_PlayerCamera = GameObject.Instantiate(GlobalAssets.mainInstance.gop_playerCameraForDude, go_ControlledActor.transform, false)
             .GetComponent<Camera>();
         if (cam_PlayerCamera != null && go_ControlledActor != null)
         {
@@ -22,7 +22,7 @@ public class CTRL_Player : MonoBehaviour
         else
         {
             throw new System.Exception("[ERROR] Le controller a mal initialisé un joueur !");
-        }
+        }*/
     }
 
     void Update()

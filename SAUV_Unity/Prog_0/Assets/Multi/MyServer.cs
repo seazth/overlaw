@@ -7,7 +7,8 @@ using System.Collections.Generic;
 
 public sealed class MyServer : MonoBehaviour
 {
-    public serverState _serverState { get; private set; }
+    public static serverState _serverState { get; private set; }
+    public int ConnectionLength;
 
     void Awake()
     {
@@ -21,14 +22,30 @@ public sealed class MyServer : MonoBehaviour
 
     public void StartServer()
     {
+
         if (_serverState != serverState.disconnected) { return; }
         NetworkServer.Listen(MNG_GameManager.mainInstance.serverport);
         Main_Canvas.add_serverlog("(Server) Started");
         gameObject.name = "MNG_Server:Started";
         Main_Canvas.set_switchServerButton(false);
         _serverState = serverState.connected;
-        ServerSpawnNPC();
-        ServerSpawnNPC();
+
+        // spawn random
+        spawnRandNpc(1,0,EntityType.Npc);
+        spawnRandNpc(1,2,EntityType.Npc);
+
+        // spawn specific obj
+        ServerSpawnDoor(new Vector3(-0.85f,0f,- 7f));
+    }
+
+    void spawnRandNpc(int number, int assetid, EntityType entitytype)
+    {
+        Vector3 pos;
+        for (int i = 0; i < number; i++)
+        {
+            pos= UnityEngine.Random.insideUnitCircle * 10f;
+            ServerSpawnNPC(new Vector3(pos.x, 2f, pos.z), assetid, entitytype);
+        }
     }
 
     public void StopServer()
@@ -42,15 +59,31 @@ public sealed class MyServer : MonoBehaviour
         _serverState = serverState.disconnected;
     }
 
-    private void ServerSpawnNPC()
+    private void ServerSpawnNPC(Vector3 position,int assetid , EntityType entitytype)
     {
-        print("(Server) ServerSpawnNPC");
-        var globals = FindObjectOfType<GlobalAssets>();
-        //initialize all server-controlled entities here
-        var npc = Instantiate<GameObject>(globals.gop_NES);
-        npc.GetComponent<NES>()._entityType = EntityType.Npc;
+        print("(Server) ServerSpawn ["+ GlobalAssets.mainInstance.multiplayers_gop[assetid].name + "]");
+        var npc = createNewNES(new Net_DefaultData() { position = position}, GlobalAssets.getMGOP_Assetid(assetid) , entitytype)
+            .gameObject;
         NetworkServer.Spawn(npc);
     }
+
+    private void ServerSpawnDoor(Vector3 position)
+    {
+        print("(Server) ServerSpawn Door");
+        var npc = createNewNES(new Net_DefaultData() {position = position }, GlobalAssets.getMGOP_Assetid(1), EntityType.SyncObject)
+            .gameObject;
+        NetworkServer.Spawn(npc);
+    }
+
+    private NES createNewNES(Net_DefaultData data, NetworkHash128 gopid, EntityType type)
+    {
+        NES go = Instantiate<GameObject>(GlobalAssets.mainInstance.gop_NES).GetComponent<NES>();
+        go._entityType = type;
+        go._data = data;
+        go._gop_id = gopid;
+        return go;
+    }
+
     private void OnPlayerConnect(NetworkMessage netMsg)
     {
         Main_Canvas.add_serverlog("(Server) CONNECTION Player " + getPlayerConnectionString(netMsg.conn));
@@ -67,26 +100,37 @@ public sealed class MyServer : MonoBehaviour
         Destroy(playerGamePiece);
     }
     public void SaveClientState() {/* FAIRE ICI LES SAUVEGARDES DU JOUEURS SUR BDD ?*/ }
+
     private void OnApplicationQuit()
     {
         Main_Canvas.add_serverlog("(Server) Shutdown");
         NetworkServer.DisconnectAll();
         //for (int i = 0; i < Network.connections.Length; i++){Network.CloseConnection(Network.connections[0], true);}
-        NetworkServer.Shutdown();
+        if(NetworkServer.active) NetworkServer.Shutdown();
     }
 
     private void OnAddPlayer(NetworkMessage netMsg)
     {
         print("(Server) INSTANCIATE Player " + getPlayerConnectionString(netMsg.conn));
-        var globals = FindObjectOfType<GlobalAssets>();
-        var playerStateGo = Instantiate<GameObject>(globals.gop_NES);
-        NES playerState = playerStateGo.GetComponent<NES>();
-        playerState._entityType = EntityType.LocalPlayer;
-        playerState.transform.SetParent(this.transform);
-        NetworkServer.AddPlayerForConnection(netMsg.conn, playerStateGo, (short)Network.connections.Length);
+        Vector3 pos = UnityEngine.Random.insideUnitCircle * 10f;
+        GameObject go_player = createNewNES(
+            new Net_DefaultData() { position = new Vector3(pos.x, 1f, pos.z) }
+            , GlobalAssets.getMGOP_Assetid(0)
+            , EntityType.Player)
+            .gameObject;
+        NetworkServer.AddPlayerForConnection(netMsg.conn, go_player, (short)Network.connections.Length);
     }
     public static string getPlayerConnectionString(NetworkConnection netconn)
     {
         return "[" + netconn.connectionId + "/" + netconn.address + "]";
+    }
+
+    void OnGUI()
+    {
+        GUI.Label(new Rect(5,0,150,20), "Player ping values");
+        for (int i = 0; i < Network.connections.Length; i++)
+        {
+            GUI.Label(new Rect(5, (i + 1) * 20, 150, 20), "Player " + Network.connections[i] + " - " + Network.GetAveragePing(Network.connections[i]) + " ms");
+        }
     }
 } 

@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows64:19</UnityBuildTarget>
     <UnityVersion>2017.2.0f3</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -214,22 +212,23 @@
       <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Analytics">
-      <HintPath>C:/Users/Syn0/AppData/LocalLow/Unity/cache/packages/packages.unity.com/com.unity.analytics@1.0.1/UnityEngine.Analytics.dll</HintPath>
+      <HintPath>C:/Users/Syno/AppData/LocalLow/Unity/cache/packages/packages.unity.com/com.unity.analytics@1.0.1/UnityEngine.Analytics.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Purchasing">
-      <HintPath>C:/Users/Syn0/AppData/LocalLow/Unity/cache/packages/packages.unity.com/com.unity.purchasing@1.0.1/UnityEngine.Purchasing.dll</HintPath>
+      <HintPath>C:/Users/Syno/AppData/LocalLow/Unity/cache/packages/packages.unity.com/com.unity.purchasing@1.0.1/UnityEngine.Purchasing.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\G_PasswordField.cs" />
     <Compile Include="Assets\Multi\ClientEntityLogic.cs" />
     <Compile Include="Assets\Multi\ent_Character.cs" />
+    <Compile Include="Assets\Multi\ent_Door.cs" />
     <Compile Include="Assets\Multi\GlobalAssets.cs" />
     <Compile Include="Assets\Multi\MyClient.cs" />
     <Compile Include="Assets\Multi\MyServer.cs" />
     <Compile Include="Assets\Multi\NES.cs" />
-    <Compile Include="Assets\Multi\ent_Door.cs" />
-    <Compile Include="Assets\Multi\ServerEntityLogic.cs" />
+    <Compile Include="Assets\Multi\Net_DefaultData.cs" />
+    <Compile Include="Assets\RigidObstacle.cs" />
     <Compile Include="Assets\Scripts\BotScript.cs" />
     <Compile Include="Assets\Scripts\CTRL_Player.cs" />
     <Compile Include="Assets\Scripts\GameObject_Extension\GameObjectExtension.cs" />
@@ -238,6 +237,7 @@
     <Compile Include="Assets\Scripts\MNG_GameManager.cs" />
     <Compile Include="Assets\Scripts\MNG_NetworkSpawner.cs" />
     <Compile Include="Assets\Scripts\TestDude.cs" />
+    <Compile Include="Assets\Scripts\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Importation\LowpolyVegetationPackFree\Readme.txt" />

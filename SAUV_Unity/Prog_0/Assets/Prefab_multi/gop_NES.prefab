@@ -113,5 +113,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _entityType: 0
-  _SyncRate: 0.02
+  _SyncRate: 0.001
   _networkSide: 0
+  _gop_id:
+    i0: 0
+    i1: 0
+    i2: 0
+    i3: 0
+    i4: 0
+    i5: 0
+    i6: 0
+    i7: 0
+    i8: 0
+    i9: 0
+    i10: 0
+    i11: 0
+    i12: 0
+    i13: 0
+    i14: 0
+    i15: 0
+  _data:
+    position: {x: 0, y: 1, z: 0}
+    rotation: {x: 0, y: 0, z: 0, w: 0}
+    activated: 0

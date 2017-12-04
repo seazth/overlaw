@@ -55,7 +55,7 @@ public static class MNG_InputController
 {
     //Input parameters
     public static float sensitivityX = 10F;
-    public static float sensitivityY = 10F;
+    public static float sensitivityY = 5F;
     public static float minimumX = -360F;
     public static float maximumX = 360F;
     public static float minimumY = -60F;

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Main_Canvas : MonoBehaviour {
 
-    private static Main_Canvas self { get; set; }
+    public static Main_Canvas self { get; set; }
     public GameObject go_CrossAir;
     public GameObject go_Menu;
     public Text ui_text_clientsconnected;

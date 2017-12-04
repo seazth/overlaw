@@ -24,18 +24,19 @@ public abstract class ClientEntityLogic : MonoBehaviour
         else if (_NES._networkSide == NetworkSide.Server) {  Start_Server(); } // no data updating on server
         else
         {
-            if(_NES.isClient && _NES._entityType == EntityType.Player) { Init_ClientPlayerEntity(); }
-            Start_Client();
+            if(_NES._networkSide == NetworkSide.LocalPlayer && _NES._entityType == EntityType.Player) { Init_LocalPlayerEntity(); }
+            else { Start_Client(); }
         }
     }
 
 
-
-    private void Init_ClientPlayerEntity()
+    // 
+    private void Init_LocalPlayerEntity()
     {
         //go_mesh.SetActive(false);
         Utils.setActiveColliders(gameObject, true);
-
+        Utils.setBodyKinematic(gameObject, false);
+        Utils.setActiveNavMesh(gameObject, false);
     }
 
     protected virtual void OnDisable()
@@ -72,17 +73,35 @@ public abstract class ClientEntityLogic : MonoBehaviour
     protected virtual void Start_Server()
     {
         Utils.setLayer(go_mesh.transform, GlobalAssets.mainInstance.lay_serverEntity);
+        //
+        if (_NES._entityType == EntityType.Npc || _NES._entityType == EntityType.SyncObject || _NES._entityType == EntityType.SomeOtherNpc)
+        {
+            Utils.setRecursiveMaterial(gameObject, Color.red);
+            Utils.setActiveNavMesh(gameObject, true);
+        }
+        else
+        {
+            Utils.setActiveNavMesh(gameObject, false);
+        }
+        Utils.setBodyKinematic(gameObject, false);
         Utils.setActiveColliders(gameObject, true);
 
-        //si joueur local & host
-        if (_NES._networkSide == NetworkSide.Server && _NES._entityType == EntityType.Player && MyServer._serverState == serverState.connected && MyClient._clientState != clientState.disconnect)
-            Utils.setActiveColliders(gameObject, false);
+
+        // SI JOUEUR LOCALDETECTEE => DETECTEE PAR NES => DESACTIVATION PHYSICS PAR COMMAND SUR SON ENTITE_SERVER
+
+
+
+        //if (_NES._networkSide == NetworkSide.Server && _NES._entityType == EntityType.Player && MyServer._serverState == serverState.connected && MyClient._clientState != clientState.disconnect)
+        //   Utils.setActiveColliders(gameObject, false);
     }
     protected virtual void Start_Client()
     {
         //if (_NES.isServer) Utils.setActiveColliders(gameObject, false);
-        if (MyServer._serverState == serverState.connected)
-            Utils.setActiveColliders(gameObject, false);
+
+        Utils.setBodyKinematic(gameObject, true);
+        Utils.setActiveColliders(gameObject, false);
+        Utils.setActiveNavMesh(gameObject, false);
+
     }
     // update by networkside
     protected abstract void Update_LocalPlayer();

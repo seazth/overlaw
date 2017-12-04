@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.Networking;
 using System;
+using System.Diagnostics;
 
 public enum EntityType
 {
@@ -34,8 +35,11 @@ public class NES : NetworkBehaviour
     public NetworkHash128 _gop_id;
 
     public Net_DefaultData _data;
+    public bool isLocalhostPlayer;
+
     private void Start()
     {
+        
         if (isServer)
         {
             _networkSide = NetworkSide.Server;
@@ -46,6 +50,10 @@ public class NES : NetworkBehaviour
             if (isLocalPlayer)
             {
                 _networkSide = NetworkSide.LocalPlayer;
+                if (_entityType == EntityType.Player)
+                {
+                    Cmd_CheckIfLocalHostPlayer(netId, (MyClient._client.serverIp.ToLower() == "locahost" || MyClient._client.serverIp.ToLower() == "127.0.0.1" || MyClient._client.serverIp.ToLower() == "::0.0.0.1"), Process.GetCurrentProcess().Id);
+                }
                 InvokeRepeating("UpdateLocalData", 0, _SyncRate);
             }
             else
@@ -57,6 +65,7 @@ public class NES : NetworkBehaviour
         else { throw new Exception("Un objet inconnu du serveur tente une instanciation !"); }
         //
         InstanciateGOP();
+        
         if (_networkSide == NetworkSide.LocalPlayer)
         {
             Utils.InstanciateNewCamera(transform.GetComponentInParent<ClientEntityLogic>().transform,GlobalAssets.mainInstance.gop_playerCamera, true);
@@ -114,9 +123,15 @@ public class NES : NetworkBehaviour
     }
 
     [Command]
-    public void Cmd_SetPlayerAsRemote(NetworkInstanceId nid, bool value)
+    public void Cmd_CheckIfLocalHostPlayer(NetworkInstanceId nid, bool islocalconn, int pid)
     {
-        Utils.setActiveColliders(NetworkServer.FindLocalObject(nid).GetComponent<NES>().transform.parent.gameObject, true);
+        if (islocalconn && Process.GetCurrentProcess().Id == pid)
+        {
+            print("<LOCALHOSTPLAYER DETECTED>");
+            NES go_playerlocalhost = NetworkServer.FindLocalObject(nid).GetComponent<NES>();
+            Utils.setBodyKinematic(go_playerlocalhost.transform.parent.gameObject, true);
+            Utils.setActiveColliders(go_playerlocalhost.transform.parent.gameObject, false);
+        }
     }
 
     void OnDestroy(){Destroy(this.transform.parent.gameObject);}

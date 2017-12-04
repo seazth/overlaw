@@ -23,7 +23,7 @@ public sealed class MyServer : MonoBehaviour
     public void StartServer()
     {
 
-        if (_serverState != serverState.disconnected) { return; }
+        if (_serverState != serverState.disconnected || MyClient._clientState != clientState.disconnect) { return; }
         NetworkServer.Listen(MNG_GameManager.mainInstance.serverport);
         Main_Canvas.add_serverlog("(Server) Started");
         gameObject.name = "MNG_Server:Started";
@@ -35,7 +35,10 @@ public sealed class MyServer : MonoBehaviour
         spawnRandNpc(1,2,EntityType.Npc);
 
         // spawn specific obj
-        ServerSpawnDoor(new Vector3(-0.85f,0f,- 7f));
+        ServerSpawnNPC(new Vector3(-0.85f, 0f, -7f), 1, EntityType.SyncObject);
+
+        MNG_GameManager.mainInstance.serverip = "Localhost";
+        FindObjectOfType<MyClient>().ConnectToServer();
     }
 
     void spawnRandNpc(int number, int assetid, EntityType entitytype)
@@ -61,21 +64,16 @@ public sealed class MyServer : MonoBehaviour
 
     private void ServerSpawnNPC(Vector3 position,int assetid , EntityType entitytype)
     {
+        if(entitytype == EntityType.Player) { throw new Exception("Impossible to instanciate manually a player entity !"); }
         print("(Server) ServerSpawn ["+ GlobalAssets.mainInstance.multiplayers_gop[assetid].name + "]");
-        var npc = createNewNES(new Net_DefaultData() { position = position}, GlobalAssets.getMGOP_Assetid(assetid) , entitytype)
+        var npc = createNewNES(new Net_DefaultData() { position = position}, GlobalAssets.getMGOP_Assetid(assetid) , entitytype,false)
             .gameObject;
         NetworkServer.Spawn(npc);
     }
 
-    private void ServerSpawnDoor(Vector3 position)
-    {
-        print("(Server) ServerSpawn Door");
-        var npc = createNewNES(new Net_DefaultData() {position = position }, GlobalAssets.getMGOP_Assetid(1), EntityType.SyncObject)
-            .gameObject;
-        NetworkServer.Spawn(npc);
-    }
 
-    private NES createNewNES(Net_DefaultData data, NetworkHash128 gopid, EntityType type)
+
+    private NES createNewNES(Net_DefaultData data, NetworkHash128 gopid, EntityType type , bool isLocalhostPlayer)
     {
         NES go = Instantiate<GameObject>(GlobalAssets.mainInstance.gop_NES).GetComponent<NES>();
         go._entityType = type;
@@ -113,10 +111,13 @@ public sealed class MyServer : MonoBehaviour
     {
         print("(Server) INSTANCIATE Player " + getPlayerConnectionString(netMsg.conn));
         Vector3 pos = UnityEngine.Random.insideUnitCircle * 10f;
+
         GameObject go_player = createNewNES(
             new Net_DefaultData() { position = new Vector3(pos.x, 1f, pos.z) }
             , GlobalAssets.getMGOP_Assetid(0)
-            , EntityType.Player)
+            , EntityType.Player
+            , true
+            )
             .gameObject;
         NetworkServer.AddPlayerForConnection(netMsg.conn, go_player, (short)Network.connections.Length);
     }

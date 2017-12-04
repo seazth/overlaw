@@ -5,7 +5,8 @@ using System;
 
 public sealed class MyClient : MonoBehaviour
 {
-    private NetworkClient _client;
+    public static  NetworkClient _client { get; private set; }
+
     private NetworkIdentity _networkStateEntityProtoType;   
     public static clientState _clientState { get; private set; }
     //public CTRL_Player playerController;
@@ -20,9 +21,14 @@ public sealed class MyClient : MonoBehaviour
         //
         
     }   
+
+    public bool isLocalServer(string serverip,int serverport)
+    {
+        return NetworkServer.listenPort == serverport
+            && (serverip.ToLower() == "localhost" || serverip.Replace(" ", "") == "127.0.0.1");
+    }
     public void ConnectToServer()
     {
-        if (!(_clientState == clientState.disconnect)) { return; }
         print("<TRY CONNECT>");
         _client = new NetworkClient();
         _client.Connect(MNG_GameManager.mainInstance.serverip, MNG_GameManager.mainInstance.serverport);

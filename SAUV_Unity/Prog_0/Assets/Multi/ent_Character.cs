@@ -85,16 +85,16 @@ public class ent_Character : ClientEntityLogic
             camTrans.localEulerAngles = new Vector3(rotx, 0f, 0f);
 
         }
-        _body.velocity = new Vector3(
-              _body.velocity.x * mov_deceleration
-            , _body.velocity.y - mov_gravity
-            , _body.velocity.z * mov_deceleration);
+        
     }
 
     protected override void Update()
     {
         base.Update();
-        
+        _body.velocity = new Vector3(
+              _body.velocity.x * mov_deceleration
+            , _body.velocity.y - mov_gravity
+            , _body.velocity.z * mov_deceleration);
     }
 
     // on vérifie si la collision entrante est une plateforme en dessous du joueur.
@@ -114,15 +114,13 @@ public class ent_Character : ClientEntityLogic
     {
         base.Start();
         inAir = false;
-        if (_NES._networkSide==NetworkSide.Server) { _body.isKinematic = true; }
     }
 
     protected override void Start_Server() 
     {
         base.Start_Server();
-         _body.isKinematic = true;
         //Instantiate<NavMeshAgent>(GlobalAssets.mainInstance.gop_defaultNavMesh);
-        InvokeRepeating("chooseDestination", 0, 3f);
+        if(_NES._entityType == EntityType.Npc) InvokeRepeating("chooseDestination", 5f, 5f);
     }
 
     protected override void Start_LocalPlayer()
@@ -134,7 +132,7 @@ public class ent_Character : ClientEntityLogic
     protected void chooseDestination()
     {
         Vector3 random2D;
-        random2D = (20 * UnityEngine.Random.insideUnitCircle);
+        random2D = (10f * UnityEngine.Random.insideUnitCircle);
         GetComponent<NavMeshAgent>().SetDestination(transform.position + new Vector3(random2D.x, 0f, random2D.y));
     }
 

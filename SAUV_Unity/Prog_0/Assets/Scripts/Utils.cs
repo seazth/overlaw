@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.AI;
 
 public static class Utils
 {
@@ -40,7 +41,19 @@ public static class Utils
     /// <param name="go">GameObject source</param>
     public static void setActiveColliders(GameObject go, bool value)
     {
+        foreach (Collider coll in go.GetComponents<Collider>()) { coll.enabled = value; }
         foreach (Collider coll in go.GetComponentsInChildren<Collider>()) { coll.enabled = value; }
+    }
+
+    public static void setBodyKinematic(GameObject go, bool value)
+    {
+        foreach (Rigidbody body in go.GetComponents<Rigidbody>()) { body.isKinematic = value; }
+        foreach (Rigidbody body in go.GetComponentsInChildren<Rigidbody>()) { body.isKinematic = value; }
+    }
+    public static void setActiveNavMesh(GameObject go, bool value)
+    {
+        foreach (NavMeshAgent body in go.GetComponents<NavMeshAgent>()) { body.enabled = value; }
+        foreach (NavMeshAgent body in go.GetComponentsInChildren<NavMeshAgent>()) { body.enabled = value; }
     }
 
     public static void setLayer(Transform go, LayerMask value)

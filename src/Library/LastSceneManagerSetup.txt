@@ -1,0 +1,4 @@
+sceneSetups:
+- path: Assets/VFRA/Scenes/0-MainMenu.unity
+  isLoaded: 1
+  isActive: 1

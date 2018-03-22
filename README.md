@@ -13,4 +13,4 @@ You need to unzip those files at the root of your photon server :
 ![Alt text](https://media.discordapp.net/attachments/386530937544114188/425372039365263360/photon.png "Optional title")
 
 You can get help via the CLI :
-![Alt text](https://media.discordapp.net/attachments/386530937544114188/426487112884420620/srv.png?width=500&height=123)
+![Alt text](https://media.discordapp.net/attachments/386530937544114188/426487112884420620/srv.png "Optional title")

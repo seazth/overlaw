@@ -26,25 +26,34 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
         walkSpeedDownscale = 2.0f,
         jumpSpeed = 1.0f;
 	public LayerMask groundLayers = -1;
-	public float groundedCheckOffset = 0.7f;
     public bool showGizmos = true;
 	public JumpDelegate onJump = null;
-	private const float inputThreshold = 0.01f
+    public float inputThreshold = 0.001f
         , groundDrag = 5.0f
         , directionalJumpFactor = 0.7f;
-	private const float groundedDistance = 0.5f;
+    public float groundedDistance = 0.25f; //0.6f
+    public float groundedCheckOffset = 1.05f; //0.7f
 
-	public bool grounded {
+    public bool grounded {
         get {
-            return Physics.Raycast(
-            target.transform.position + target.transform.up * -groundedCheckOffset,
-            target.transform.up * -1,
-            groundedDistance,
-            groundLayers
-        );
+            RaycastHit b;
+            //bool a = Physics.BoxCast(GetComponent<BoxCollider>().bounds.center /*+ Vector3.down * GetComponent<BoxCollider>().bounds.size.y*1f*/, GetComponent<BoxCollider>().bounds.size, transform.up * -1,out b, transform.rotation, GetComponent<BoxCollider>().bounds.size.y, groundLayers);
+            /*bool a = Physics.CheckSphere(GetComponent<BoxCollider>().bounds.center + Vector3.down * GetComponent<BoxCollider>().bounds.size.y * 1f, 0.5f, groundLayers);
+            if (a) print("grounded ");
+            else { print("not grounded"); }
+            return a;
+            */
+            return Physics.CheckSphere(target.transform.position + target.transform.up * -groundedCheckOffset, groundedDistance, groundLayers);
+            /*return Physics.Raycast(
+                target.transform.position + target.transform.up * -groundedCheckOffset,
+                target.transform.up * -1,
+                groundedDistance,
+                groundLayers
+            );*/
+            
     }}
 
-	void Reset ()
+    void Reset ()
 	{
 		Setup ();
 	}
@@ -53,7 +62,6 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
 	void Setup ()
 	{
 		if (target == null) { target = GetComponent<Rigidbody> (); }
-
     }
 
 
@@ -260,7 +268,7 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
                     else
                     // If we are grounded and don't have significant input, just stop horizontal movement
                     {
-                        target.velocity = new Vector3(0.0f, target.velocity.y, 0.0f);
+                        //target.velocity = new Vector3(0.0f, target.velocity.y, 0.0f);
                         return;
                     }
                 }

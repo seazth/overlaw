@@ -30,36 +30,20 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
 	public JumpDelegate onJump = null;
     public float inputThreshold = 0.001f
         , groundDrag = 5.0f
-        , directionalJumpFactor = 0.7f;
+        , directionalJumpFactor = 0.7f
+        , airDrag = 1f;
     public float groundedDistance = 0.25f; //0.6f
     public float groundedCheckOffset = 1.05f; //0.7f
 
-    public bool grounded {
-        get {
-            RaycastHit b;
-            //bool a = Physics.BoxCast(GetComponent<BoxCollider>().bounds.center /*+ Vector3.down * GetComponent<BoxCollider>().bounds.size.y*1f*/, GetComponent<BoxCollider>().bounds.size, transform.up * -1,out b, transform.rotation, GetComponent<BoxCollider>().bounds.size.y, groundLayers);
-            /*bool a = Physics.CheckSphere(GetComponent<BoxCollider>().bounds.center + Vector3.down * GetComponent<BoxCollider>().bounds.size.y * 1f, 0.5f, groundLayers);
-            if (a) print("grounded ");
-            else { print("not grounded"); }
-            return a;
-            */
-            return Physics.CheckSphere(target.transform.position + target.transform.up * -groundedCheckOffset, groundedDistance, groundLayers);
-            /*return Physics.Raycast(
-                target.transform.position + target.transform.up * -groundedCheckOffset,
-                target.transform.up * -1,
-                groundedDistance,
-                groundLayers
-            );*/
-            
-    }}
+
+
+    public bool grounded {get {return Physics.CheckSphere(target.transform.position + target.transform.up * -groundedCheckOffset, groundedDistance, groundLayers);}}
 
     void Reset ()
 	{
-		Setup ();
+        Setup ();
 	}
-	
-	
-	void Setup ()
+    void Setup ()
 	{
 		if (target == null) { target = GetComponent<Rigidbody> (); }
     }
@@ -67,7 +51,7 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
 
     void Start ()
 	{
-		Setup (); // Retry setup if references were cleared post-add
+        Setup (); // Retry setup if references were cleared post-add
 		if (target == null)
 		{
 			Debug.LogError ("No target assigned. Please correct and restart.");
@@ -83,6 +67,7 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
         if (photonView.isMine && collision.gameObject.tag == "Ball")
         {
             GetComponent<PhotonView>().RPC("rpc_immobilize", PhotonTargets.All);
+            ChatVik.SendRoomMessage(collision.gameObject.GetComponent<PhotonView>().owner.NickName + " knocked out " + photonView.owner.NickName);
         }
     }
 
@@ -92,38 +77,37 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
 	{
         if (!photonView.isMine) return;
 
-        if (Input.GetMouseButtonDown(0) && PhotonNetwork.player.getTeamID()==1) // you can only give a slap when you're a thief
+        if (Input.GetMouseButtonDown(0) 
+            && PhotonNetwork.player.getTeamID()==1
+            && !PhotonNetwork.player.GetAttribute(PlayerAttributes.ISIMMOBLIZED, false)) // you can only give a slap when you're a thief
         {
             RaycastHit hitInfo = new RaycastHit();
-            bool hit = Physics.Raycast(
-                transform.forward * 0.3f + transform.position
-                , transform.forward
-                , out hitInfo
-                , 1f
-                , LayerMask.GetMask("NetEntity"));
+            bool hit = Physics.Raycast(transform.forward * 0.3f + transform.position, transform.forward, out hitInfo, 1.2f, LayerMask.GetMask("NetEntity"));
             if (hit && hitInfo.transform.gameObject.tag == "Player")
             {
                 hitInfo.transform.GetComponent<PhotonView>().RPC("rpc_immobilize", PhotonTargets.All);
+                ChatVik.SendRoomMessage(photonView.owner.NickName + " kick the ass of " + hitInfo.transform.GetComponent<PhotonView>());
+
             }
         }
 
-        if (Input.GetMouseButton(1) && PhotonNetwork.player.getTeamID() == 2
-            && Time.timeSinceLevelLoad - timeCantShoot > durationCantShoot && !_isPrepareToThrow) // you can only throw a ball when you're a cop
+        if (Input.GetMouseButton(1) 
+            && PhotonNetwork.player.getTeamID() == 2
+            && Time.timeSinceLevelLoad - timeCantShoot > durationCantShoot && !_isPrepareToThrow
+            && !PhotonNetwork.player.GetAttribute(PlayerAttributes.ISIMMOBLIZED, false)) // you can only throw a ball when you're a cop
         {
             timeHoldingShoot = Time.timeSinceLevelLoad;
             StartCoroutine(prepareToThrow());
         }
 
-        if (Input.GetKeyDown(KeyCode.F) && PhotonNetwork.player.getTeamID() == 2 && !isCapturingThief
+        if (Input.GetKeyDown(KeyCode.F) 
+            && PhotonNetwork.player.getTeamID() == 2 
+            && !isCapturingThief
             && !PhotonNetwork.player.GetAttribute(PlayerAttributes.ISIMMOBLIZED, false) ) // you can only capture when you're a cop
         {
+
             RaycastHit hitInfo = new RaycastHit();
-            bool hit = Physics.Raycast(
-                transform.forward * 0.2f + transform.position
-                , transform.forward
-                , out hitInfo
-                , 1.2f
-                , LayerMask.GetMask("NetEntity"));
+            bool hit = Physics.Raycast(transform.forward * 0.3f + transform.position, transform.forward, out hitInfo, 1.2f, LayerMask.GetMask("NetEntity"));
             if (hit && hitInfo.transform.gameObject.tag == "Player")
             {
                 
@@ -219,6 +203,7 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
         if (!photonView.isMine) return;
 
 
+
         if (grounded)
         {
             if (!PhotonNetwork.player.GetAttribute(PlayerAttributes.ISIMMOBLIZED,false)) // immobilization gestion 
@@ -280,7 +265,7 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
         }
         else
         {
-            target.drag = 0.0f;
+            target.drag = airDrag;
         }
     }
 	

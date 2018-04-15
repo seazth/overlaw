@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 [RequireComponent (typeof (ThirdPersonControllerNET))]
-public class AnimationController : MonoBehaviour
+public class AnimationController : Photon.MonoBehaviour
 {
 	enum CharacterState
 	{
@@ -50,9 +50,14 @@ public class AnimationController : MonoBehaviour
 			return new Vector3 (rigidbody.velocity.x, 0.0f, rigidbody.velocity.z);
 		}
 	}
-	
-	
-	void Reset ()
+
+
+    private bool _isPointed = false;
+    public bool isPointed { get { return _isPointed; } set { _isPointed = value; outline_script.enabled = value; } }
+    public cakeslice.Outline outline_script;
+    public AnimationController charpointed;
+
+    void Reset ()
 	// Run setup on component attach, so it is visually more clear which references are used
 	{
 		Setup ();
@@ -62,16 +67,12 @@ public class AnimationController : MonoBehaviour
 	void Setup ()
 	// If target or rigidbody are not set, try using fallbacks
 	{
-		if (target == null)
-		{
-			target = GetComponent<Animation> ();
-		}
-		
-		if (rigidbody == null)
-		{
-			rigidbody = GetComponent<Rigidbody> ();
-		}
-	}
+		if (target == null) target = GetComponent<Animation> ();
+		if (rigidbody == null) rigidbody = GetComponent<Rigidbody> ();
+        charpointed = null;
+        isPointed = false;
+        print("isPointed = false FOR " + gameObject.name);
+    }
 	
 	
 	void Start ()
@@ -89,8 +90,6 @@ public class AnimationController : MonoBehaviour
 			lastRootForward = root.forward;
 		}
 	}
-	
-	
 	bool VerifySetup ()
 	{
 		return VerifySetup (target, "target") &&
@@ -99,8 +98,6 @@ public class AnimationController : MonoBehaviour
 			VerifySetup (spine, "spine") &&
 			VerifySetup (hub, "hub");
 	}
-	
-	
 	bool VerifySetup (Component component, string name)
 	{
 		if (component == null)
@@ -123,8 +120,6 @@ public class AnimationController : MonoBehaviour
 		
 		Invoke ("Fall", target["Jump"].length);
 	}
-	
-	
 	void OnLand ()
 	// Start a landing
 	{
@@ -137,8 +132,6 @@ public class AnimationController : MonoBehaviour
 				// Land quicker if we're moving enough horizontally to start walking after landing
 		);
 	}
-	
-	
 	void Fall ()
 	// End a jump and transition to a falling state (ignore if already grounded)
 	{
@@ -148,8 +141,6 @@ public class AnimationController : MonoBehaviour
 		}
 		state = CharacterState.Falling;
 	}
-	
-	
 	void Land ()
 	// End a landing and transition to normal animation state (ignore if not currently landing)
 	{
@@ -159,8 +150,6 @@ public class AnimationController : MonoBehaviour
 		}
 		state = CharacterState.Normal;
 	}
-	
-	
 	void FixedUpdate ()
 	// Handle changes in groundedness
 	{
@@ -176,7 +165,30 @@ public class AnimationController : MonoBehaviour
 			canLand = true;
 		}
 
-	}
+        if (!photonView.isMine) return;
+
+        RaycastHit hitInfo = new RaycastHit();
+        bool hit = Physics.Raycast(transform.forward * 0.3f + transform.position, transform.forward, out hitInfo, 3f, LayerMask.GetMask("NetEntity"));
+        if (hit
+            && hitInfo.transform.gameObject.tag == "Player"
+            && hitInfo.transform.GetComponent<PhotonView>().owner != null)
+        {
+            int target_tid = hitInfo.transform.GetComponent<PhotonView>().owner.getTeamID();
+            if (//target_tid != PhotonNetwork.player.getTeamID() && 
+                (target_tid == 1 || target_tid == 2))
+            {
+                if (charpointed != hitInfo.transform.GetComponent<AnimationController>())
+                {
+                    if (charpointed != null) charpointed.isPointed = false;
+                    charpointed = hitInfo.transform.GetComponent<AnimationController>();
+                    charpointed.isPointed = true;
+                    print("Pointing now >> " + charpointed.name);
+                }
+            }
+            //else if (charpointed != null) charpointed.isPointed = false;
+        }
+        else if (charpointed != null) { charpointed.isPointed = false; charpointed = null; }
+    }
 
 
 	void Update ()
@@ -232,8 +244,6 @@ public class AnimationController : MonoBehaviour
 
     
     }
-	
-	
 	void LateUpdate ()
 	// Apply directional rotation of lower body
 	{
@@ -277,4 +287,6 @@ public class AnimationController : MonoBehaviour
 		spine.RotateAround (spine.position, root.up, currentRotation * -1.0f);
 			// Rotate the upper-body to face forward
 	}
+
+
 }

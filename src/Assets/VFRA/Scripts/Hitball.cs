@@ -31,5 +31,9 @@ public class Hitball : Photon.MonoBehaviour
     void OnPhotonInstantiate(PhotonMessageInfo info){}
     private void OnCollisionEnter(Collision collision)
     {
+        if (collision.gameObject.tag == "Player")
+        {
+            PhotonNetwork.Destroy(GetComponent<PhotonView>());
+        }
     }
 }

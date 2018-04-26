@@ -144,7 +144,7 @@ public class AnimationController : Photon.MonoBehaviour
         { 
             Vector3 movement = HorizontalMovement;
             float angle = Vector3.Angle(movement, transform.forward);
-            print(angle);
+          
             if (movement.magnitude < walkSpeed)
                 SetAnimTrigger("Idle");
             else if (angle > 45f && angle < 135f)

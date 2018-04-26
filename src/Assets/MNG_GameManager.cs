@@ -12,6 +12,7 @@ public class MNG_GameManager : Photon.MonoBehaviour
     static MNG_GameManager instance;
     public static Team[] getTeams { get { return instance.teamList; } }
     public Team[] teamList;
+    public GameObject[] ThiefZonesPosition;
 
     // ENDGAME
     public GameObject EndGamePanel;

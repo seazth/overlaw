@@ -30,7 +30,7 @@ public enum RoomAttributes { GAMESTATE, PLAYERSREADY, PLAYERSCANSPAWN,
     IMMOBILIZEALL
 }
 public enum TeamAttributes { PLAYERSALIVE, PLAYERSCOUNT,
-    ROUNDSWON
+    ROUNDSWON, SCORE
 }
 public enum GameState { GameState_error, isLoading, isWaitingNewGame,  RoundRunning, isGameFinishing, isGameReloading, 
     isRoundFinishing,

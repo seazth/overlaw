@@ -123,7 +123,7 @@ public class MNG_Multiplayer : Photon.MonoBehaviour {
                         + (p.GetAttribute<bool>(PlayerAttributes.ISCAPTURED, false) ? " ISCAPTURED" : "")
                         + (p.GetAttribute<bool>(PlayerAttributes.ISIMMOBILIZED, false) ? " ISIMMOBLIZED" : "")
                         + " "+ p.GetAttribute<string>(PlayerAttributes.INZONE, "?")
-                        + " SCORE: " + p.GetScore()
+                        + " SCORE: " + p.GetAttribute<int>(PlayerAttributes.SCORE, 0)
                         + " " + p.CustomProperties[PlayerAttributes.testKey]
                         + "\n";
                 }

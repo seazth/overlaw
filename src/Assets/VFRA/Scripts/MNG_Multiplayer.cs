@@ -48,11 +48,7 @@ public class MNG_Multiplayer : Photon.MonoBehaviour {
     public Dropdown ConnectionsPresetDropdown;
     public InputField ConnVersionInput;
     public Dropdown ProtocolDropdown;
-
-
-
     public Button Btn_Multiplayer;
-
     public InputField Input_Pseudo;
 
     void Start () {
@@ -125,7 +121,7 @@ public class MNG_Multiplayer : Photon.MonoBehaviour {
                         + (p.GetAttribute<bool>(PlayerAttributes.ISIDLE, false)? " ISIDLE" : "")
                         + (p.GetAttribute<bool>(PlayerAttributes.INPRISONZONE, false)? " INPRISONZONE" : "")
                         + (p.GetAttribute<bool>(PlayerAttributes.ISCAPTURED, false) ? " ISCAPTURED" : "")
-                        + (p.GetAttribute<bool>(PlayerAttributes.ISIMMOBLIZED, false) ? " ISIMMOBLIZED" : "")
+                        + (p.GetAttribute<bool>(PlayerAttributes.ISIMMOBILIZED, false) ? " ISIMMOBLIZED" : "")
                         + " "+ p.GetAttribute<string>(PlayerAttributes.INZONE, "?")
                         + " SCORE: " + p.GetScore()
                         + " " + p.CustomProperties[PlayerAttributes.testKey]
@@ -238,6 +234,8 @@ public class MNG_Multiplayer : Photon.MonoBehaviour {
 
     public void onPseudoChange(string value)
     {
+        if (value.Length>14) { Input_Pseudo.text = PlayerPrefs.GetString("playerName"); return; }
+
         PlayerPrefs.SetString("playerName", value);
         PhotonNetwork.playerName = value;
         Input_Pseudo.text = value;

@@ -79,12 +79,8 @@ public class PrisonTrigger : MonoBehaviour {
 
         if (countsHasChanged)
         {
-            bool openPrison=false;
             // CECI EST DU LINQ EXPRESSION, APPELEZ MOI SI VOUS VOULEZ DES INFOS DESSUS - RL
-            if (!(playerInZone.Any(s=>s.getTeamID() == 2)) && (playerInZone.Any(s => s.getTeamID() == 1)))
-                    openPrison = true;
-            if(PhotonNetwork.room.GetAttribute(RoomAttributes.PRISONOPEN,false) != openPrison)
-                PhotonNetwork.room.SetAttribute(RoomAttributes.PRISONOPEN, openPrison);
+            PhotonNetwork.room.SetAttribute(RoomAttributes.PRISONOPEN, (playerInZone.Count(s => s.getTeamID() == 2) == 0) && (playerInZone.Any(s => s.getTeamID() == 1)));
             countsHasChanged = false;
         }
 

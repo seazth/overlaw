@@ -45,25 +45,36 @@ public class MNG_MainMenu : MonoBehaviour {
 
     public void RefreshRoomList()
     {
-        if (!PhotonNetwork.connected) return;
-        int row = 0;
-        foreach (RoomInfo game in PhotonNetwork.GetRoomList())
+        for (int i = 0; i < Rect_RoomslistScrollview.childCount; i++)
         {
-            Button newRoomBtn = Instantiate<Button>(gop_BtnRoom, Rect_RoomslistScrollview);
-            RectTransform rect = newRoomBtn.GetComponent<RectTransform>();
-            rect.anchoredPosition.Set(rect.anchoredPosition.x, row * 50);
-
-            if(game.Name == SelectedRoom){newRoomBtn.interactable = false;Btn_SelectedRoom = newRoomBtn;}
-            if (game.IsLocalClientInside){newRoomBtn.interactable = false;}
-
-            string gamename = game.Name;
-            bool alreadyconnected = game.IsLocalClientInside;
-            newRoomBtn.onClick.AddListener(() => SelectRoom(newRoomBtn,alreadyconnected, gamename));
-
-            Text[] txts = newRoomBtn.GetComponentsInChildren<Text>();
-            txts[0].text = game.Name+(game.IsLocalClientInside?" [Joined]":"" );
-            txts[1].text = game.PlayerCount + "/" + game.MaxPlayers;
+            Destroy(Rect_RoomslistScrollview.GetChild(i));
         }
+        try
+        {
+            int row = 0;
+            foreach (RoomInfo game in PhotonNetwork.GetRoomList())
+            {
+                Button newRoomBtn = Instantiate<Button>(gop_BtnRoom, Rect_RoomslistScrollview);
+                RectTransform rect = newRoomBtn.GetComponent<RectTransform>();
+                rect.position = new Vector3(rect.position.x, rect.position.y - 50f * row, 0f);
+
+                if (game.Name == SelectedRoom) { newRoomBtn.interactable = false; Btn_SelectedRoom = newRoomBtn; }
+                if (game.IsLocalClientInside) { newRoomBtn.interactable = false; }
+
+                string gamename = game.Name;
+                bool alreadyconnected = game.IsLocalClientInside;
+                newRoomBtn.onClick.AddListener(() => SelectRoom(newRoomBtn, alreadyconnected, gamename));
+
+                Text[] txts = newRoomBtn.GetComponentsInChildren<Text>();
+                txts[0].text = game.Name + (game.IsLocalClientInside ? " [Joined]" : "");
+                txts[1].text = game.PlayerCount + "/" + game.MaxPlayers;
+                row++;
+            }
+        }
+        catch
+        {
+        }
+        
     }
 
     public void SelectRoom(Button newRoomBtn, bool alreadyconnected, string gamename)
@@ -118,6 +129,7 @@ public class MNG_MainMenu : MonoBehaviour {
 
 
 
+    public string playerprefabname_overlaw = "Overlaw_Player";
     public string playerPrefabName = "VikCharprefab";
     public string spectatorPrefabName = "Spectator";
     public void Spawn()
@@ -136,7 +148,7 @@ public class MNG_MainMenu : MonoBehaviour {
             objs[0] = enabledRenderers;
 
             PhotonNetwork.player.SetPlayerState(PlayerState.inGame);
-            playerChar = PhotonNetwork.Instantiate(this.playerPrefabName, MNG_GameManager.getTeams[PhotonNetwork.player.getTeamID()].TeamSpawnLocation + new Vector3(randpos.x, 0f, randpos.y), Quaternion.identity, 0, objs);
+            playerChar = PhotonNetwork.Instantiate(this.playerprefabname_overlaw, MNG_GameManager.getTeams[PhotonNetwork.player.getTeamID()].TeamSpawnLocation + new Vector3(randpos.x, 0f, randpos.y), Quaternion.identity, 0, objs);
         }
         else
         {

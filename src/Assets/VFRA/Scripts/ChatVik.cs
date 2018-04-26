@@ -38,6 +38,7 @@ public class ChatVik : Photon.MonoBehaviour
         GUI.color = Color.white;
 
         //Chat input
+        
         /*
         GUILayout.BeginHorizontal(); 
         GUI.SetNextControlName("ChatField");
@@ -59,7 +60,7 @@ public class ChatVik : Photon.MonoBehaviour
                 }
             }
         }
-
+        
         //if (GUILayout.Button("SEND", GUILayout.Height(17)))
          //   SendChat(PhotonTargets.All);
         //GUILayout.FlexibleSpace();

@@ -26,10 +26,14 @@ public class Hitball : Photon.MonoBehaviour
         }
     }
 
-    
+    private void OnCollisionEnter(Collision p)
+    {
+        if (photonView.isMine && p.gameObject.tag == "Player")
+        {
+            PhotonNetwork.Destroy(GetComponent<PhotonView>());
+        }
+    }
 
     void OnPhotonInstantiate(PhotonMessageInfo info){}
-    private void OnCollisionEnter(Collision collision)
-    {
-    }
+   
 }

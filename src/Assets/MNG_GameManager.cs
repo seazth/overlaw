@@ -13,6 +13,9 @@ public class MNG_GameManager : Photon.MonoBehaviour
     public static Team[] getTeams { get { return instance.teamList; } }
     public Team[] teamList;
     public GameObject[] ThiefZonesPosition;
+    public int max_Zones = 4;
+    public int nb_Zones;
+    int suivi_zone;
 
     // ENDGAME
     public GameObject EndGamePanel;
@@ -40,6 +43,8 @@ public class MNG_GameManager : Photon.MonoBehaviour
     {
         instance = this;
         mng_main = FindObjectOfType<MNG_MainMenu>();
+        
+
     }
 
 
@@ -56,6 +61,7 @@ public class MNG_GameManager : Photon.MonoBehaviour
 
     void Update ()
     {
+        
         if (!PhotonNetwork.inRoom) return;
 
         text_Gamestatus.text = (PhotonNetwork.room.GetRoomState()).ToString();
@@ -88,6 +94,19 @@ public class MNG_GameManager : Photon.MonoBehaviour
 
             }
         }
+
+        if (nb_Zones < max_Zones)
+        {
+            if (suivi_zone >= ThiefZonesPosition.Length)
+            {
+                suivi_zone = 0;
+           }
+            PhotonNetwork.Instantiate("Thief_zone"
+                , instance.ThiefZonesPosition[suivi_zone].transform.position
+               , Quaternion.identity, 0);
+            nb_Zones++;
+            suivi_zone++;
+        }
     }
 
     public void OnCreatedRoom()
@@ -99,7 +118,16 @@ public class MNG_GameManager : Photon.MonoBehaviour
             PhotonNetwork.room.IsOpen = true;
             PhotonNetwork.room.SetRoomState( GameState.isWaitingNewGame);
             InitRoomAttributes();
+               for (int i = 0; i < max_Zones; i++)
+        {
+            PhotonNetwork.Instantiate("Thief_zone"
+                , instance.ThiefZonesPosition[i].transform.position
+                , Quaternion.identity, 0);
+            nb_Zones++;
+                suivi_zone++;
         }
+        }
+
     }
     public void switchReadyState()
     {
@@ -176,6 +204,7 @@ public class MNG_GameManager : Photon.MonoBehaviour
         PhotonNetwork.room.SetAttribute(RoomAttributes.PLAYERSCANSPAWN, true);
         while (PhotonNetwork.room.PlayerCount< minPlayers) yield return new WaitForSeconds(1f);
         PhotonNetwork.room.SetRoomState(GameState.BeginningRound);
+     
         ReloadRoomScene();
     }
 

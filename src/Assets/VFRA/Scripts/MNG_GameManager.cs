@@ -30,7 +30,7 @@ public class MNG_GameManager : Photon.MonoBehaviour
     public bool WaitingToStart;
 
     // GAME_ROUND
-    public int durationRound = 1000*60*3;
+    public int durationRound = 1000;
     public int minPlayers = 4;
     public int durationRoundPreparation = 10000;
     public int durationRoundFinalize = 5000;
@@ -139,7 +139,7 @@ public class MNG_GameManager : Photon.MonoBehaviour
     public void UpdateTimer()
     {
         if (PhotonNetwork.room.GetRoomState() == GameState.RoundRunning)
-            text_Timer.text = ( (durationRound - PhotonNetwork.ServerTimestamp - PhotonNetwork.room.GetAttribute(RoomAttributes.TIMEROUNDSTARTED, PhotonNetwork.ServerTimestamp)) / 1000).ToString() + "s";
+            text_Timer.text = ( (durationRound - PhotonNetwork.ServerTimestamp - PhotonNetwork.room.GetAttribute(RoomAttributes.TIMEROUNDSTARTED, PhotonNetwork.ServerTimestamp))).ToString() + "s";
         else
             text_Timer.text = "-";
     }
@@ -154,7 +154,6 @@ public class MNG_GameManager : Photon.MonoBehaviour
             ZoneActuel_Index++;
         }
     }
-
     public void OnCreatedRoom()
     {
         if(PhotonNetwork.inRoom && !PhotonNetwork.isNonMasterClientInRoom)
@@ -166,7 +165,6 @@ public class MNG_GameManager : Photon.MonoBehaviour
             InvokeRepeating("RefreshGameBoard", 0f, 1f);
         }
     }
-
     public void UpdateReadyBtnState()
     {
         bool value = PhotonNetwork.player.GetAttribute<bool>(PlayerAttributes.ISREADY, false);
@@ -174,7 +172,6 @@ public class MNG_GameManager : Photon.MonoBehaviour
         
         go_checkmark_Ready.SetActive(value);
     }
-
     public void switchReadyState()
     {
         if (!PhotonNetwork.inRoom
@@ -206,9 +203,6 @@ public class MNG_GameManager : Photon.MonoBehaviour
         PhotonNetwork.DestroyAll();
         PhotonNetwork.LoadLevel("0-MainMenu");
     }
-
-
-
     void RefreshGameBoard()
     {
         PhotonPlayer[] plist = PhotonNetwork.playerList; // BUGFIX CAR LA LISTE PEUT CHANGER EN TRAITEMENT
@@ -276,7 +270,6 @@ public class MNG_GameManager : Photon.MonoBehaviour
         teamList[1].txt_roundswon.text = PhotonNetwork.room.GetTeamAttribute(1, TeamAttributes.ROUNDSWON, 0).ToString();
         teamList[2].txt_roundswon.text = PhotonNetwork.room.GetTeamAttribute(2, TeamAttributes.ROUNDSWON, 0).ToString();
     }
-
     string getPlayerStrState(PhotonPlayer player)
     {
         return (player.GetAttribute(PlayerAttributes.ISCAPTURED, false) ? "Captured" : player.GetPlayerState() == PlayerState.inGame ? "ig" : player.GetAttribute(PlayerAttributes.ISREADY, false) ? "Ready" : "-");
@@ -288,6 +281,7 @@ public class MNG_GameManager : Photon.MonoBehaviour
 
     public void UpdateGameInfos()
     {
+        print(durationRound - PhotonNetwork.ServerTimestamp - PhotonNetwork.room.GetAttribute(RoomAttributes.TIMEROUNDSTARTED, PhotonNetwork.ServerTimestamp));
         // UPDATE DE LA PARTIE UNIQUEMENT POUR LE MASTERPLAYER
         if (!(PhotonNetwork.player.isGameOwner() && PhotonNetwork.room.GetRoomState() == GameState.RoundRunning)) return;
         // ON CHECK SI LE TIMER EST ATTEInt OU TOUT LES THIEFS SONT CAPTUREE
@@ -305,7 +299,7 @@ public class MNG_GameManager : Photon.MonoBehaviour
             StartCoroutine(FinalizeRound(2));
 
         }
-        else if (PhotonNetwork.ServerTimestamp - PhotonNetwork.room.GetAttribute(RoomAttributes.TIMEROUNDSTARTED, PhotonNetwork.ServerTimestamp) > durationRound)
+        else if (durationRound - PhotonNetwork.ServerTimestamp - PhotonNetwork.room.GetAttribute(RoomAttributes.TIMEROUNDSTARTED, PhotonNetwork.ServerTimestamp) > 0)
         {
             ChatVik.SendRoomMessage("THIEVES WIN THE ROUND");
             PhotonNetwork.room.SetTeamAttribute(1, TeamAttributes.ROUNDSWON, PhotonNetwork.room.GetTeamAttribute(1, TeamAttributes.ROUNDSWON, 0) + 1);
@@ -367,9 +361,10 @@ public class MNG_GameManager : Photon.MonoBehaviour
 
         // INIT DES JOUEURS AU ROUND
         PhotonNetwork.room.SetAttribute(RoomAttributes.PLAYERSCANSPAWN, false);
+        print(durationRound);
+        PhotonNetwork.room.SetAttribute(RoomAttributes.TIMEROUNDSTARTED, PhotonNetwork.ServerTimestamp);
         PhotonNetwork.room.SetRoomState(GameState.RoundRunning);
         PhotonNetwork.room.SetAttribute(RoomAttributes.ROUNDNUMBER, PhotonNetwork.room.GetAttribute(RoomAttributes.ROUNDNUMBER, 0)+1);
-        PhotonNetwork.room.SetAttribute(RoomAttributes.TIMEROUNDSTARTED, PhotonNetwork.ServerTimestamp);
         ChatVik.SendRoomMessage("New round : "+ PhotonNetwork.room.GetAttribute(RoomAttributes.ROUNDNUMBER, 0));
         SetImmobilizeAll(false);    
     }

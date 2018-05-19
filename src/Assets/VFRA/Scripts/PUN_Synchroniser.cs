@@ -27,7 +27,6 @@ public class PUN_Synchroniser : Photon.MonoBehaviour
         }
         else
         {
-
             //controllerScript._characterState = (CharacterState)(int)stream.ReceiveNext();
             stream_position = (Vector3)stream.ReceiveNext();
             stream_rotation = (Quaternion)stream.ReceiveNext();

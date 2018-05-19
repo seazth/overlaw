@@ -11,10 +11,11 @@ public class TriggerZone : Photon.MonoBehaviour {
         {
             PhotonPlayer player = other.GetComponent<PhotonView>().owner;
             if (player != null 
+                && other.GetComponent<PhotonView>().isMine
                 && player.GetAttribute<bool>(PlayerAttributes.HASSPAWNED,false)
                 && player.GetPlayerState() == PlayerState.inGame)
             {
-                print("Player " + other.name + " enter " + zoneName);
+                //print("Player " + other.name + " enter " + zoneName);
                 player.SetAttribute(PlayerAttributes.INZONE, zoneName);
             }
         }
@@ -26,11 +27,12 @@ public class TriggerZone : Photon.MonoBehaviour {
         {
             PhotonPlayer player = other.GetComponent<PhotonView>().owner;
             if (player != null
+                && other.GetComponent<PhotonView>().isMine
                 && player.GetAttribute<bool>(PlayerAttributes.HASSPAWNED, false)
                 && player.GetAttribute<string>(PlayerAttributes.INZONE, "") == zoneName
                 && player.GetPlayerState() == PlayerState.inGame)
             {
-                print("Player " + other.name + " left " + zoneName);
+                //print("Player " + other.name + " left " + zoneName);
                 player.SetAttribute(PlayerAttributes.INZONE, "");
             }
         }

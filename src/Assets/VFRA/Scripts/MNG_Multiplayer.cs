@@ -1,10 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-public class MNG_Multiplayer : Photon.MonoBehaviour {
+public class MNG_Multiplayer : MonoBehaviour {
 
 
     //Multi 
@@ -50,6 +51,7 @@ public class MNG_Multiplayer : Photon.MonoBehaviour {
     public Dropdown ProtocolDropdown;
     public Button Btn_Multiplayer;
     public InputField Input_Pseudo;
+
 
     void Start () {
 
@@ -132,8 +134,6 @@ public class MNG_Multiplayer : Photon.MonoBehaviour {
                 {
                     tmp +=
                         "TEAM > " + MNG_GameManager.getTeams[tid].TeamName
-                        + " PLAYERSALIVE: " + PhotonNetwork.room.GetTeamAttribute<int>(tid,TeamAttributes.PLAYERSALIVE,0)
-                        + " PLAYERSCOUNT: " + PhotonNetwork.room.GetTeamAttribute<int>(tid,TeamAttributes.PLAYERSCOUNT,0)
                         + "\n";
                 }
                 // AFICHER TEAM ICI
@@ -216,8 +216,7 @@ public class MNG_Multiplayer : Photon.MonoBehaviour {
     {
         print("OnLeftRoom");
         while (PhotonNetwork.room != null || PhotonNetwork.connected == false) yield return 0;
-        Application.LoadLevel("0-MainMenu");
-
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     public void OnJoinedRoom()
     {
@@ -225,13 +224,10 @@ public class MNG_Multiplayer : Photon.MonoBehaviour {
         Network.sendRate = 100;
         //Camera.main.farClipPlane = 1000; //Main menu set this to 0.4 for a nicer BG 
     }
-
     public void OnCreatedRoom()
     {
         print("OnCreatedRoom");
     }
-
-
     public void onPseudoChange(string value)
     {
         if (value.Length>14) { Input_Pseudo.text = PlayerPrefs.GetString("playerName"); return; }

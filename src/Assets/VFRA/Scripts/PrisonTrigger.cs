@@ -21,6 +21,7 @@ public class PrisonTrigger : MonoBehaviour {
         {
             PhotonPlayer player = other.GetComponent<PhotonView>().owner;
             if (player != null
+                && other.GetComponent<PhotonView>().isMine
                 && player.GetAttribute<bool>(PlayerAttributes.HASSPAWNED, false)
                 && player.GetPlayerState() == PlayerState.inGame)
             {
@@ -48,6 +49,7 @@ public class PrisonTrigger : MonoBehaviour {
         {
             PhotonPlayer player = other.GetComponent<PhotonView>().owner;
             if (player != null
+                && other.GetComponent<PhotonView>().isMine
                 && player.GetAttribute<bool>(PlayerAttributes.HASSPAWNED, false)
                 && player.GetPlayerState() == PlayerState.inGame)
             {

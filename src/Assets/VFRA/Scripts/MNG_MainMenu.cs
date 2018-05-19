@@ -11,6 +11,8 @@ public class MNG_MainMenu : MonoBehaviour {
     public GameObject Panel_Multiplayer;
     public GameObject Panel_Settings;
     public GameObject Panel_Credits;
+    public GameObject Panel_Gameboard;
+    public GameObject Panel_Help;
 
     //Multiplayer panel room management
     public RectTransform Rect_RoomslistScrollview;
@@ -20,11 +22,8 @@ public class MNG_MainMenu : MonoBehaviour {
     public GameObject RoomMenu;
     public GameObject SpecateMenu;
     public static bool captureMouse {
-        get
-        {
-            return _captureStatic;
-        }
-        set
+        get { return _captureStatic; }
+        set 
         {
             _captureStatic = value;
             if (value) { Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; }
@@ -32,6 +31,7 @@ public class MNG_MainMenu : MonoBehaviour {
         }
     }
     static bool _captureStatic = false;
+    public AudioSource MainMusic;
 
 
     //=============================================================================================//
@@ -39,6 +39,7 @@ public class MNG_MainMenu : MonoBehaviour {
     public void Start()
     {
         RoomMenu.SetActive(PhotonNetwork.inRoom);
+        Panel_Gameboard.SetActive(false);
         Show_PanelMain();
 
     }
@@ -46,6 +47,7 @@ public class MNG_MainMenu : MonoBehaviour {
     public void RefreshRoomList()
     {
         for (int i = 0; i < Rect_RoomslistScrollview.childCount; i++)
+<<<<<<< HEAD
         {
             Destroy(Rect_RoomslistScrollview.GetChild(i));
         }
@@ -74,6 +76,36 @@ public class MNG_MainMenu : MonoBehaviour {
         catch
         {
         }
+=======
+        {
+            Destroy(Rect_RoomslistScrollview.GetChild(i));
+        }
+        try
+        {
+            int row = 0;
+            foreach (RoomInfo game in PhotonNetwork.GetRoomList())
+            {
+                Button newRoomBtn = Instantiate<Button>(gop_BtnRoom, Rect_RoomslistScrollview);
+                RectTransform rect = newRoomBtn.GetComponent<RectTransform>();
+                rect.position = new Vector3(rect.position.x, rect.position.y - 50f * row, 0f);
+
+                if (game.Name == SelectedRoom) { newRoomBtn.interactable = false; Btn_SelectedRoom = newRoomBtn; }
+                if (game.IsLocalClientInside) { newRoomBtn.interactable = false; }
+
+                string gamename = game.Name;
+                bool alreadyconnected = game.IsLocalClientInside;
+                newRoomBtn.onClick.AddListener(() => SelectRoom(newRoomBtn, alreadyconnected, gamename));
+
+                Text[] txts = newRoomBtn.GetComponentsInChildren<Text>();
+                txts[0].text = game.Name + (game.IsLocalClientInside ? " [Joined]" : "");
+                txts[1].text = game.PlayerCount + "/" + game.MaxPlayers;
+                row++;
+            }
+        }
+        catch
+        {
+        }
+>>>>>>> f7c5561eb46001627d511be29871bc753f978a70
         
     }
 
@@ -114,32 +146,52 @@ public class MNG_MainMenu : MonoBehaviour {
     private void OnConnectedToServer() { print("OnConnectedToServer : " + PhotonNetwork.connectionStateDetailed); }
 
     private void Update(){
+
+        // MENU NAVIGUATION KEY
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             MenuPanel.SetActive(!MenuPanel.activeInHierarchy);
             captureMouse = !MenuPanel.activeInHierarchy;
+            Panel_Gameboard.SetActive(false);
         }
-        if (Input.GetKeyDown(KeyCode.Tab))  captureMouse = false; 
-        if(Input.GetKeyUp(KeyCode.Tab)) captureMouse = !MenuPanel.activeInHierarchy;
-
-        //BUG FIX : On maintient le cursor bloqué à chaque update !
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            captureMouse = false;
+            if (!PhotonNetwork.inRoom) MenuPanel.SetActive(false);
+            else Panel_Gameboard.SetActive(!Panel_Gameboard.activeInHierarchy);
+        }
+        if (Input.GetKeyUp(KeyCode.Tab))
+        {
+            captureMouse = !MenuPanel.activeInHierarchy;
+            if (!PhotonNetwork.inRoom) MenuPanel.SetActive(false);
+            else Panel_Gameboard.SetActive(!Panel_Gameboard.activeInHierarchy);
+        }
+        
+        //MOUSE LOCKING BUG FIX : On maintient le cursor bloqué à chaque update !
         if (captureMouse) { Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; }
+            
+        // HELP MENU
+        Panel_Help.SetActive(Input.GetKey(KeyCode.F1));
+
+        //MUSIC MANAGEMENT
+        InputMusic();
     }
 
-
-
-
+<<<<<<< HEAD
+    void InputMusic()
+=======
     public string playerprefabname_overlaw = "Overlaw_Player";
     public string playerPrefabName = "VikCharprefab";
     public string spectatorPrefabName = "Spectator";
     public void Spawn()
+>>>>>>> f7c5561eb46001627d511be29871bc753f978a70
     {
-        if (!PhotonNetwork.inRoom || PhotonNetwork.player.GetAttribute<bool>(PlayerAttributes.HASSPAWNED, false)) return;
-        // Spawn our local player
-        GameObject playerChar;
-        Vector2 randpos = UnityEngine.Random.insideUnitCircle * 5f;
-        if (PhotonNetwork.player.getTeamID() == 1 || PhotonNetwork.player.getTeamID() == 2)
+        //ACTIVE/DESACTIVE LA MUSIQUE
+        if (Input.GetKeyDown(KeyCode.F5))
         {
+<<<<<<< HEAD
+            MainMusic.mute = !MainMusic.mute;
+=======
             bool[] enabledRenderers = new bool[2];
             enabledRenderers[0] = Random.Range(0, 2) == 0;//Axe
             enabledRenderers[1] = Random.Range(0, 2) == 0;//Shield
@@ -149,32 +201,26 @@ public class MNG_MainMenu : MonoBehaviour {
 
             PhotonNetwork.player.SetPlayerState(PlayerState.inGame);
             playerChar = PhotonNetwork.Instantiate(this.playerprefabname_overlaw, MNG_GameManager.getTeams[PhotonNetwork.player.getTeamID()].TeamSpawnLocation + new Vector3(randpos.x, 0f, randpos.y), Quaternion.identity, 0, objs);
+>>>>>>> f7c5561eb46001627d511be29871bc753f978a70
         }
-        else
+        //BAISSE LE VOLUME
+        if (Input.GetKeyDown(KeyCode.F6))
         {
-            PhotonNetwork.player.SetAttribute(PlayerAttributes.TEAM, 3);
-            PhotonNetwork.player.SetPlayerState(PlayerState.isSpectating);
-            playerChar = PhotonNetwork.Instantiate(this.spectatorPrefabName, MNG_GameManager.getTeams[PhotonNetwork.player.getTeamID()].TeamSpawnLocation + new Vector3(randpos.x, 0f, randpos.y), Quaternion.identity, 0);
-
+            MainMusic.volume-=0.1f;
+            if(MainMusic.volume<0) MainMusic.volume =0;
+        }
+        //AUGMENTE LE VOLUME
+        if (Input.GetKeyDown(KeyCode.F7))
+        {
+            MainMusic.volume += 0.1f;
+            if (MainMusic.volume < 0) MainMusic.volume = 100;
         }
 
-        PhotonNetwork.player.SetAttribute(PlayerAttributes.HASSPAWNED, true);
-        playerChar.GetComponent<MNG_CameraController>().camera = Camera.main;
-        Camera.main.transform.parent = playerChar.transform;
-        Camera.main.transform.localPosition = new Vector3(0, 0, 0);
-        Camera.main.transform.localEulerAngles = new Vector3(0, 0, 0);
-        captureMouse = true;
-        ChatVik.SendRoomMessage(PhotonNetwork.player.NickName + " has spawn as " + MNG_GameManager.getTeams[PhotonNetwork.player.getTeamID()].TeamName);
     }
 
-    public void OnJoinedRoom()
-    {
-        RoomMenu.SetActive(true);
-    }
-    public void OnLeftRoom()
-    {
-        RoomMenu.SetActive(false);
-    }
+
+    public void OnJoinedRoom() { RoomMenu.SetActive(true); MenuPanel.SetActive(false); }
+    public void OnLeftRoom() { RoomMenu.SetActive(false); }
     
     public void CloseGame()
     {

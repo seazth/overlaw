@@ -47,7 +47,6 @@ public class MNG_MainMenu : MonoBehaviour {
     public void RefreshRoomList()
     {
         for (int i = 0; i < Rect_RoomslistScrollview.childCount; i++)
-<<<<<<< HEAD
         {
             Destroy(Rect_RoomslistScrollview.GetChild(i));
         }
@@ -76,36 +75,7 @@ public class MNG_MainMenu : MonoBehaviour {
         catch
         {
         }
-=======
-        {
-            Destroy(Rect_RoomslistScrollview.GetChild(i));
-        }
-        try
-        {
-            int row = 0;
-            foreach (RoomInfo game in PhotonNetwork.GetRoomList())
-            {
-                Button newRoomBtn = Instantiate<Button>(gop_BtnRoom, Rect_RoomslistScrollview);
-                RectTransform rect = newRoomBtn.GetComponent<RectTransform>();
-                rect.position = new Vector3(rect.position.x, rect.position.y - 50f * row, 0f);
 
-                if (game.Name == SelectedRoom) { newRoomBtn.interactable = false; Btn_SelectedRoom = newRoomBtn; }
-                if (game.IsLocalClientInside) { newRoomBtn.interactable = false; }
-
-                string gamename = game.Name;
-                bool alreadyconnected = game.IsLocalClientInside;
-                newRoomBtn.onClick.AddListener(() => SelectRoom(newRoomBtn, alreadyconnected, gamename));
-
-                Text[] txts = newRoomBtn.GetComponentsInChildren<Text>();
-                txts[0].text = game.Name + (game.IsLocalClientInside ? " [Joined]" : "");
-                txts[1].text = game.PlayerCount + "/" + game.MaxPlayers;
-                row++;
-            }
-        }
-        catch
-        {
-        }
->>>>>>> f7c5561eb46001627d511be29871bc753f978a70
         
     }
 
@@ -177,31 +147,12 @@ public class MNG_MainMenu : MonoBehaviour {
         InputMusic();
     }
 
-<<<<<<< HEAD
     void InputMusic()
-=======
-    public string playerprefabname_overlaw = "Overlaw_Player";
-    public string playerPrefabName = "VikCharprefab";
-    public string spectatorPrefabName = "Spectator";
-    public void Spawn()
->>>>>>> f7c5561eb46001627d511be29871bc753f978a70
     {
         //ACTIVE/DESACTIVE LA MUSIQUE
         if (Input.GetKeyDown(KeyCode.F5))
         {
-<<<<<<< HEAD
             MainMusic.mute = !MainMusic.mute;
-=======
-            bool[] enabledRenderers = new bool[2];
-            enabledRenderers[0] = Random.Range(0, 2) == 0;//Axe
-            enabledRenderers[1] = Random.Range(0, 2) == 0;//Shield
-
-            object[] objs = new object[1]; // Put our bool data in an object array, to send
-            objs[0] = enabledRenderers;
-
-            PhotonNetwork.player.SetPlayerState(PlayerState.inGame);
-            playerChar = PhotonNetwork.Instantiate(this.playerprefabname_overlaw, MNG_GameManager.getTeams[PhotonNetwork.player.getTeamID()].TeamSpawnLocation + new Vector3(randpos.x, 0f, randpos.y), Quaternion.identity, 0, objs);
->>>>>>> f7c5561eb46001627d511be29871bc753f978a70
         }
         //BAISSE LE VOLUME
         if (Input.GetKeyDown(KeyCode.F6))

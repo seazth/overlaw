@@ -17,13 +17,8 @@ public enum RoomAttributes { GAMESTATE, PLAYERSREADY, PLAYERSCANSPAWN,
     IMMOBILIZEALL,
     CHANGEINGMASTER
 }
-<<<<<<< HEAD
 public enum TeamAttributes { ROUNDSWON,
     SCORE
-=======
-public enum TeamAttributes { PLAYERSALIVE, PLAYERSCOUNT,
-    ROUNDSWON, SCORE
->>>>>>> f7c5561eb46001627d511be29871bc753f978a70
 }
 public enum GameState { GameState_error, isLoading, isWaitingNewGame,  RoundRunning, isGameFinishing, isGameReloading, 
     isRoundFinishing,
@@ -39,12 +34,8 @@ public enum PlayerAttributes
 {
     SCORE, TEAM, PLAYERSTATE, ISIDLE, ISLAGGY, testKey, ISREADY, ISROOMADMIN, HASSPAWNED,
     INZONE , ISCAPTURED, ISIMMOBILIZED,
-<<<<<<< HEAD
     INPRISONZONE,
     CAPTURESCORE
-=======
-    INPRISONZONE
->>>>>>> f7c5561eb46001627d511be29871bc753f978a70
 }
 
 /// <summary>

@@ -11,20 +11,14 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
     float timeCantShoot;
     float timeCantPunch;
     float timeHoldingShoot;
-<<<<<<< HEAD
     float timeCantClimbGrab;
-=======
->>>>>>> f7c5561eb46001627d511be29871bc753f978a70
     public bool _climbing = false;
     public bool _grounded = false;
 
     public float durationCantMove = 5f;
     public float durationCantShoot = 1.6f;
     public float durationCantPunch = 1f;
-<<<<<<< HEAD
     public float durationCantClimbGrab = 0.1f;
-=======
->>>>>>> f7c5561eb46001627d511be29871bc753f978a70
 
     public float durationCatch = 2f;
     bool isCapturingThief = false;
@@ -105,20 +99,13 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
 
 
             if (Input.GetMouseButtonDown(0)
-<<<<<<< HEAD
                 && Time.timeSinceLevelLoad - timeCantPunch > durationCantPunch
                 && !_climbing
                 && !_isPrepareToThrow) // you can only give a slap when you're a thief
             {
                 timeCantPunch = Time.timeSinceLevelLoad;
                 CTRL_Animation.call_anim_trigger("Punch", layer: 1);
-=======
-                //&& PhotonNetwork.player.getTeamID()==1
-                && Time.timeSinceLevelLoad - timeCantPunch > durationCantPunch) // you can only give a slap when you're a thief
-            {
-                timeCantPunch = Time.timeSinceLevelLoad;
-                CTRL_Animation._animator.SetTrigger("Punch");
->>>>>>> f7c5561eb46001627d511be29871bc753f978a70
+
                 RaycastHit hitInfo = new RaycastHit();
                 bool hit = Physics.Raycast(transform.forward * 0.3f + transform.position, transform.forward, out hitInfo, 1.2f, LayerMask.GetMask("NetEntity"));
                 if (hit && hitInfo.transform.gameObject.tag == "Player")
@@ -130,13 +117,10 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
 
             if (Input.GetMouseButton(1)
                 && PhotonNetwork.player.getTeamID() == 2
-<<<<<<< HEAD
                 && Time.timeSinceLevelLoad - timeCantShoot > durationCantShoot
                 && !_isPrepareToThrow
                 && !_climbing)  // you can only throw a ball when you're a cop
-=======
-                && Time.timeSinceLevelLoad - timeCantShoot > durationCantShoot && !_isPrepareToThrow)  // you can only throw a ball when you're a cop
->>>>>>> f7c5561eb46001627d511be29871bc753f978a70
+
             {
                 timeHoldingShoot = Time.timeSinceLevelLoad;
                 StartCoroutine(prepareToThrow());
@@ -144,12 +128,9 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.F)
                 && PhotonNetwork.player.getTeamID() == 2
-<<<<<<< HEAD
                 && !isCapturingThief
                 && !_climbing) // you can only capture when you're a cop
-=======
-                && !isCapturingThief) // you can only capture when you're a cop
->>>>>>> f7c5561eb46001627d511be29871bc753f978a70
+
             {
 
                 RaycastHit hitInfo = new RaycastHit();
@@ -169,7 +150,6 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
 
             
 
-<<<<<<< HEAD
             if (Input.GetButtonDown("Jump") 
                 && (grounded || (_climbing)))
             // Handle jumping
@@ -192,28 +172,6 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
                 {
                     CTRL_Animation.call_anim_trigger("Climb");
                     _climbing = true;
-=======
-            if (Input.GetButtonDown("Jump"))
-            {
-                if(grounded || _climbing)
-                // Handle jumping
-                {
-                        target.AddForce( jumpforce * target.transform.up + target.velocity.normalized * directionalJumpFactor, ForceMode.VelocityChange );
-                        onJump();
-                        _climbing = false;
-                        CTRL_Animation.call_anim_trigger("Jump");
-                }
-                else if (!_climbing)
-                // Handle climbing
-                {
-                    bool canclimb = Physics.CheckSphere(target.transform.position + target.transform.up * checkclimbtop + target.transform.forward * checkclimbforward, 0.2f, groundLayers);
-
-                    if (canclimb)
-                    {
-                        CTRL_Animation.call_anim_trigger("Climb", layer: 1);
-                        _climbing = true;
-                    }
->>>>>>> f7c5561eb46001627d511be29871bc753f978a70
                 }
             }
         }
@@ -303,11 +261,7 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
             PhotonNetwork.player.SetAttribute(PlayerAttributes.ISIMMOBILIZED, false);
         }
 
-<<<<<<< HEAD
         if (_climbing && !PhotonNetwork.player.GetAttribute(PlayerAttributes.ISIMMOBILIZED, false))
-=======
-        if (_climbing)
->>>>>>> f7c5561eb46001627d511be29871bc753f978a70
         {
             target.drag = 999f;
         }

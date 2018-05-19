@@ -9,7 +9,7 @@ public class MNG_CameraController : MonoBehaviour {
 
     public Vector3 cameraOffset;
     public float cameraRotation;
-    public Vector2 cameraRotationSpeed;
+    
     public float cameraVerticalClamp;
 
     public bool lockTransfomRotX = false;
@@ -32,10 +32,10 @@ public class MNG_CameraController : MonoBehaviour {
         
 
         //horizontal
-        if(!lockTransfomRotX) transform.Rotate(transform.up, Input.GetAxis("Mouse X") * cameraRotationSpeed.x * Time.deltaTime);
+        if(!lockTransfomRotX) transform.Rotate(transform.up, Input.GetAxis("Mouse X") * MNG_MainMenu.cameraRotationSpeed.x * Time.deltaTime);
 
         //vertical
-        cameraRotation -= Input.GetAxis("Mouse Y")* cameraRotationSpeed.y * Time.deltaTime;
+        cameraRotation -= Input.GetAxis("Mouse Y")* MNG_MainMenu.cameraRotationSpeed.y * Time.deltaTime;
         if (cameraRotation > cameraVerticalClamp) cameraRotation = cameraVerticalClamp;
         if (cameraRotation < -cameraVerticalClamp) cameraRotation = -cameraVerticalClamp;
         //apply rotation

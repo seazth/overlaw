@@ -32,6 +32,7 @@ public class MNG_MainMenu : MonoBehaviour {
     }
     static bool _captureStatic = false;
     public AudioSource MainMusic;
+    public static Vector2 cameraRotationSpeed = new Vector2(80, 80);
 
 
     //=============================================================================================//
@@ -41,7 +42,7 @@ public class MNG_MainMenu : MonoBehaviour {
         RoomMenu.SetActive(PhotonNetwork.inRoom);
         Panel_Gameboard.SetActive(false);
         Show_PanelMain();
-
+        Debug.Log(cameraRotationSpeed.ToString());
     }
 
     public void RefreshRoomList()
@@ -161,10 +162,17 @@ public class MNG_MainMenu : MonoBehaviour {
             if(MainMusic.volume<0) MainMusic.volume =0;
         }
         //AUGMENTE LE VOLUME
-        if (Input.GetKeyDown(KeyCode.F7))
+        if (Input.GetKeyDown(KeyCode.F8))
         {
-            MainMusic.volume += 0.1f;
-            if (MainMusic.volume < 0) MainMusic.volume = 100;
+            cameraRotationSpeed.x -= 10;
+            cameraRotationSpeed.y -= 10;
+            Debug.Log(cameraRotationSpeed.ToString());
+        }
+        if (Input.GetKeyDown(KeyCode.F9))
+        {
+            cameraRotationSpeed.x += 10;
+            cameraRotationSpeed.y += 10;
+            Debug.Log(cameraRotationSpeed.ToString());
         }
 
     }

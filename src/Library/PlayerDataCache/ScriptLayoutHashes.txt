@@ -149,11 +149,7 @@ e9bdabf9265d758d56f01bb188916fa8 UnityEngine.Networking.dll:UnityEngine.Networki
 9de3a22eca9aefadba2d10d5987cefe3 UnityEngine.SpatialTracking.dll:UnityEngine.SpatialTracking.TrackedPoseDriver
 c2d15b04283157b00cbdbfaf16c18482 Assembly-CSharp.dll:.PickupItemSyncer
 c1df6bba7f7b35a48ac544b9017761dd Assembly-CSharp.dll:.PlayerDiamond
-<<<<<<< HEAD
 538960e2f09d90f61268c4041bf74f83 Assembly-CSharp.dll:.MNG_MainMenu
-=======
-c565a45d37e65a5a0cd1d16c2000ec50 Assembly-CSharp.dll:.MNG_MainMenu
->>>>>>> f7c5561eb46001627d511be29871bc753f978a70
 090584907af2e462994cc893ced507b3 Assembly-CSharp.dll:.PhotonRigidbody2DView
 22df741b1a3c6d3b215ca28ad83c5a3f Assembly-CSharp.dll:UnityStandardAssets.ImageEffects.ScreenSpaceAmbientObscurance
 02f0bc5e25b41bdc131009e4484fe1db Assembly-CSharp.dll:cakeslice.Outline
@@ -207,11 +203,7 @@ c0ad1fb5d400aa83cb257e5f6c3714cf Assembly-CSharp.dll:.OnClickDestroy
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.RPGCharacterGUI
 a5c741b815f33c04783e91455b527dd8 Assembly-CSharp.dll:.RPGCharacterControllerFREE
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:UnityStandardAssets.Water.WaterBasic
-<<<<<<< HEAD
 269cb6d0813cff66cb5af9cee0bbf5cf Assembly-CSharp.dll:.ThirdPersonControllerNET
-=======
-3574bdfaf17519dc25b2d4ac2371bd45 Assembly-CSharp.dll:.ThirdPersonControllerNET
->>>>>>> f7c5561eb46001627d511be29871bc753f978a70
 30c6237931168f8b4c2f10a656a47aa8 Assembly-CSharp.dll:.PickupItem
 b9efe2a0d1c9ba7bc46e66a07a897115 Assembly-CSharp.dll:.ServerSettings
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:UnityStandardAssets.ImageEffects.PostEffectsHelper
@@ -241,11 +233,8 @@ e1025b836c346ec4d39479b488e7bb30 Assembly-CSharp.dll:MK.Glow.MKGlowFree
 ea580b2edab741d1d6e6445b14097645 Assembly-CSharp.dll:.RPGCamera
 173a033cde910692227c728d6b89fedd Assembly-CSharp.dll:.OnClickCallMethod
 1356b4a6096c35c829823b7e28399030 Assembly-CSharp.dll:.IELdemo
-<<<<<<< HEAD
 ff4b784035722f0d19b67795cd468031 Assembly-CSharp.dll:.PlayerGBInfo
 5f5eb25d97ba526b719d3a833191697f Assembly-CSharp.dll:.Onstart_Activator
-=======
->>>>>>> f7c5561eb46001627d511be29871bc753f978a70
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.TestRunner.dll:UnityEngine.TestTools.TestRunner.Callbacks.PlayModeRunnerCallback
 96d0fbde9fd209878a0a291f82c9bcdd UnityEngine.TestRunner.dll:UnityEngine.TestTools.TestRunner.PlaymodeTestsController
 64eb32cc721b1cc68a91ed57461e188c UnityEngine.TestRunner.dll:UnityEngine.TestTools.TestRunner.Callbacks.RemoteTestResultSender

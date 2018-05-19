@@ -40,8 +40,8 @@ MonoBehaviour:
     y: 647
     width: 1308
     height: 324
-  m_MinSize: {x: 102, y: 121}
-  m_MaxSize: {x: 4002, y: 4021}
+  m_MinSize: {x: 100, y: 100}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 20}
   m_Panes:
   - {fileID: 20}
@@ -70,7 +70,7 @@ MonoBehaviour:
   m_MinSize: {x: 202, y: 342}
   m_MaxSize: {x: 4002, y: 8042}
   vertical: 1
-  controlID: 310
+  controlID: 11
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -168,7 +168,7 @@ MonoBehaviour:
   m_MinSize: {x: 713, y: 492}
   m_MaxSize: {x: 18008, y: 14042}
   vertical: 0
-  controlID: 308
+  controlID: 9
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -281,7 +281,7 @@ MonoBehaviour:
   m_MinSize: {x: 436, y: 492}
   m_MaxSize: {x: 14006, y: 14042}
   vertical: 0
-  controlID: 309
+  controlID: 10
 --- !u!114 &13
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -300,8 +300,8 @@ MonoBehaviour:
     y: 0
     width: 1308
     height: 647
-  m_MinSize: {x: 202, y: 221}
-  m_MaxSize: {x: 4002, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 18}
   m_Panes:
   - {fileID: 18}
@@ -375,19 +375,19 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SearchArea: 0
     m_Folders:
-    - Assets
+    - Assets/VFRA/MODL
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets
+  - Assets/VFRA/MODL
   m_LastFoldersGridSize: 16
   m_LastProjectPath: C:\Users\Redfield\Documents\Overlawv2_VAL\src
   m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 55}
-    m_SelectedIDs: c82d0000
-    m_LastClickedID: 11720
-    m_ExpandedIDs: 00000000c82d00000a2e0000d82e0000ea2f000090300000ae31000062320000a2330000f43500007e3600008036000002370000563700005837000090370000863800000e3a0000263a0000ec3b0000483c00007c3c0000fa3c00008e3d0000ea3e0000fe3e00006283000000ca9a3bffffff7f
+    m_SelectedIDs: 282c0000
+    m_LastClickedID: 11304
+    m_ExpandedIDs: 00000000e82a00002e2b0000002c00002e2d0000d62d00000a2f0000c82f00000e310000743300002a3400002c340000c2340000183500001a3500005435000062360000003800001c380000003a0000623a0000963a0000183b0000b23b00002c3d0000423d0000c081000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -415,7 +415,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 00300000
     m_LastClickedID: 12288
-    m_ExpandedIDs: 00000000c82d00000a2e0000d82e0000ea2f000090300000ae31000062320000a2330000f43500007e3600008036000002370000563700005837000090370000863800000e3a0000263a0000ec3b0000483c0000fa3c00008e3d0000ea3e0000fe3e000062830000
+    m_ExpandedIDs: 00000000e82a00002e2b0000002c00002e2d0000d62d00000a2f0000c82f00000e310000743300002a3400002c340000c2340000183500001a3500005435000062360000003800001c380000003a0000623a0000963a0000183b0000b23b00002c3d0000423d0000c0810000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -442,8 +442,8 @@ MonoBehaviour:
   m_ListAreaState:
     m_SelectedInstanceIDs: 
     m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 1
-    m_ExpandedInstanceIDs: c6230000
+    m_HadKeyboardFocusLastEvent: 0
+    m_ExpandedInstanceIDs: c6230000d2330000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -535,7 +535,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 9cf9ffff00000000
+    m_ExpandedIDs: 48abffff4cabffff96fbffff98fbffff00000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -586,14 +586,14 @@ MonoBehaviour:
     height: 626
   m_PersistentViewDataDictionary: {fileID: 0}
   m_SceneLighting: 1
-  lastFramingTime: 0
+  lastFramingTime: 38.12970486600427
   m_2DMode: 0
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 28.667389, y: 24.129847, z: 36.92549}
+    m_Target: {x: 67.88469, y: -0.21626851, z: 48.08793}
     speed: 2
-    m_Value: {x: 28.667389, y: 24.129847, z: 36.92549}
+    m_Value: {x: 67.88469, y: -0.21626851, z: 48.08793}
   m_RenderMode: 0
   m_ValidateTrueMetals: 0
   m_SceneViewState:
@@ -617,13 +617,13 @@ MonoBehaviour:
       speed: 2
       m_Value: 0
   m_Rotation:
-    m_Target: {x: 0.16274606, y: 0.722166, z: -0.181563, w: 0.64732134}
+    m_Target: {x: 0.18340899, y: 0.6972754, z: -0.19208327, w: 0.6657869}
     speed: 2
-    m_Value: {x: 0.16274606, y: 0.722166, z: -0.181563, w: 0.64732134}
+    m_Value: {x: 0.18340899, y: 0.6972754, z: -0.19208327, w: 0.6657869}
   m_Size:
-    m_Target: 19.016848
+    m_Target: 4.300476
     speed: 2
-    m_Value: 19.016848
+    m_Value: 4.300476
   m_Ortho:
     m_Target: 0
     speed: 2

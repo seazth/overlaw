@@ -126,7 +126,7 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
                 StartCoroutine(prepareToThrow());
             }
 
-            if (Input.GetKeyDown(KeyCode.F)
+            if (Input.GetKeyDown(KeyCode.E)
                 && PhotonNetwork.player.getTeamID() == 2
                 && !isCapturingThief
                 && !_climbing) // you can only capture when you're a cop
@@ -148,8 +148,6 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
             }
 
 
-            
-
             if (Input.GetButtonDown("Jump") 
                 && (grounded || (_climbing)))
             // Handle jumping
@@ -161,7 +159,15 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
                     timeCantClimbGrab = Time.timeSinceLevelLoad;
 
             }
-            else if (Input.GetKey(KeyCode.LeftControl) 
+            else if (Input.GetKeyDown(KeyCode.LeftControl)
+                && _climbing)
+            // Handle releasing
+            {
+                CTRL_Animation.call_anim_trigger("Jump");
+                _climbing = false;
+                timeCantClimbGrab = Time.timeSinceLevelLoad;
+            }
+            else if (Input.GetKey(KeyCode.LeftControl)
                 && !_climbing 
                 && Time.timeSinceLevelLoad - timeCantClimbGrab > durationCantClimbGrab)
             // Handle climbing
@@ -227,7 +233,7 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
                 force =  Mathf.Clamp(minThrowForce+((Time.timeSinceLevelLoad - timeHoldingShoot) * throwForceMult), minThrowForce, maxThrowForce);
                 //print("Send ball with force = " + force);
                 PhotonNetwork.Instantiate("Hitball"
-                , transform.position + transform.forward * 1f + transform.up * 0.2f + transform.right * 0.1f
+                , transform.position + transform.forward * 1.3f + transform.up * 0.2f + transform.right * 0.1f
                 , Quaternion.identity, 0).GetComponent<Rigidbody>()
                 .AddForce(GetComponentInChildren<Camera>().transform.forward
                     * force

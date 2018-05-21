@@ -39,11 +39,18 @@ public class ThiefZonePoint : Photon.MonoBehaviour
                         PhotonNetwork.room.AddTeamScore(1, PointGenere);
                     }
 
-                    Manager_game.ZonesList.Remove(gameObject);
-                    PhotonNetwork.Destroy(GetComponent<PhotonView>());        //destruction de la zone
+                    Manager_game.ActiveZonesList.Remove(gameObject);
+                    //destruction de la zone
+                    photonView.RPC("rpc_UnspawnThiefZone", PhotonTargets.MasterClient);
 
                 }
             }
         }
+    }
+
+    [PunRPC]
+    public void rpc_UnspawnThiefZone()
+    {
+        PhotonNetwork.Destroy(GetComponent<PhotonView>());
     }
 }

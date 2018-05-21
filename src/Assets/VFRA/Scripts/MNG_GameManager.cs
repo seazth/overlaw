@@ -15,23 +15,14 @@ public class MNG_GameManager : Photon.MonoBehaviour
     public PlayerGBInfo[] playersGBInfoList;
 
     //ZONE VAL'
-    public GameObject[] ThiefZonesPosition;
-    public int max_Zones = 4;
-    public List<GameObject> ZonesList;
-    int ZoneActuel_Index =0;
-
-    // ENDGAME
-    public GameObject EndGamePanel;
-    public bool GameFinished;
-    public int WinnerTeam;
-
-    // START
-    public GameObject StartGamePanel;
-    public bool WaitingToStart;
+    public Transform ThiefZonesPositionRoot;
+    Transform[] ZonesList;
+    int max_Zones;
+    public List<GameObject> ActiveZonesList;
 
     // GAME_ROUND
     public int durationRound = 180000;
-    public int minPlayers = 4;
+    public int minPlayers = 2;
     public int durationRoundPreparation = 10000;
     public int durationRoundFinalize = 5000;
 
@@ -61,7 +52,13 @@ public class MNG_GameManager : Photon.MonoBehaviour
     {
         instance = this;
         mng_main = FindObjectOfType<MNG_MainMenu>();
-        ZonesList = new List<GameObject>();
+        ActiveZonesList = new List<GameObject>();
+
+        ZonesList = new Transform[ThiefZonesPositionRoot.transform.childCount];
+        for (int i = 0; i < ThiefZonesPositionRoot.transform.childCount; i++)
+        {
+            ZonesList[i] = ThiefZonesPositionRoot.transform.GetChild(i);
+        }
     }
 
     /// <summary>
@@ -130,7 +127,7 @@ public class MNG_GameManager : Photon.MonoBehaviour
                 ChatVik.SendRoomMessage("Warmup : Waiting " + minPlayers + " players minimum to start game");
                 StartCoroutine(WarmUp());
             }
-            else if(PhotonNetwork.room.GetRoomState() == GameState.BeginningRound)
+            else if(PhotonNetwork.room.GetRoomState() == GameState.BeginningRound)  
             {
                 StartCoroutine(PrepareRound());
             }
@@ -164,14 +161,25 @@ public class MNG_GameManager : Photon.MonoBehaviour
     /// Gestion des points de passages
     /// </summary>
     public void ManageWaypoints()
-    {
-        if (ZonesList.Count < max_Zones)
+    {   
+        if (ActiveZonesList.Count < max_Zones)
         {
-            if (ZoneActuel_Index >= ThiefZonesPosition.Length) ZoneActuel_Index = 0;
-            ZonesList.Add(PhotonNetwork.Instantiate("Thief_zone"
-                , instance.ThiefZonesPosition[ZoneActuel_Index].transform.position
-               , Quaternion.identity, 0));
-            ZoneActuel_Index++;
+            int newIndex = Random.Range(0, ZonesList.Length - 1);
+            print("NEW ZONE:" + newIndex);
+            ActiveZonesList.Add(PhotonNetwork.Instantiate("Thief_zone", instance.ZonesList[newIndex].position, Quaternion.identity, 0));
+        }
+    }
+
+
+    /// <summary>
+    /// Détruit tous les points de passage pour voleur
+    /// </summary>
+    public void DestroyThiefZones()
+    {
+        for (int i = 0; i < ActiveZonesList.Count; i++)
+        {
+            PhotonNetwork.Destroy(ActiveZonesList[0].GetPhotonView());
+            ActiveZonesList.RemoveAt(0);
         }
     }
 
@@ -413,7 +421,8 @@ public class MNG_GameManager : Photon.MonoBehaviour
         PhotonNetwork.room.SetRoomState(GameState.PrepareRound); // au cas ou
         PhotonNetwork.room.SetAttribute(RoomAttributes.PLAYERSCANSPAWN, true);
         SetImmobilizeAll(true);
-
+        max_Zones = System.Math.Max(3,PhotonNetwork.playerList.Count(w => (w.getTeamID() == 1) && w.GetAttribute(PlayerAttributes.HASSPAWNED, false))+1);
+        print("max_Zones:" + max_Zones);
         //DEPOP DES JOUEURS
         foreach (PhotonPlayer p in PhotonNetwork.playerList.Where(w => (w.getTeamID() == 1 || w.getTeamID() == 2) && w.GetAttribute(PlayerAttributes.HASSPAWNED, false)))
         {
@@ -463,11 +472,10 @@ public class MNG_GameManager : Photon.MonoBehaviour
         PhotonNetwork.room.SetRoomState(GameState.isRoundFinishing); // au cas ou
         PhotonNetwork.room.SetAttribute(RoomAttributes.PLAYERSCANSPAWN, false);
         SetImmobilizeAll(true);
-        for (int i = 0; i < ZonesList.Count; i++)
-        {
-            PhotonNetwork.Destroy(ZonesList[0].GetPhotonView());
-            ZonesList.RemoveAt(0);
-        }
+
+        //DESTRUCTION DES POINTS DE PASSAGES VOLEURS
+        DestroyThiefZones();
+
         //SETUP WINNER PANEL
         if (PhotonNetwork.room.GetTeamAttribute(winnerTeamId, TeamAttributes.ROUNDSWON,0) == 3 )
         {
@@ -509,6 +517,7 @@ public class MNG_GameManager : Photon.MonoBehaviour
         // INIT DES JOUEURS AU ROUND
         PhotonNetwork.room.SetRoomState(GameState.BeginningRound);
     }
+
 
     [PunRPC]
     public void rpc_callWinner(int teamid,bool wintype)

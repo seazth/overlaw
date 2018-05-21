@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Cette classe initialize un joueur
+/// </summary>
 public class PlayerInitializer : Photon.MonoBehaviour {
 
     public TextMesh textname;

@@ -20,7 +20,7 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
     public float durationCantPunch = 1f;
     public float durationCantClimbGrab = 0.1f;
 
-    public float durationCatch = 2f;
+    public float durationCatch = 1f;
     bool isCapturingThief = false;
     bool _isPrepareToThrow = false;
     public bool isPrepareToThrow { get { return _isPrepareToThrow; } }
@@ -77,7 +77,10 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
 		//target.freezeRotation = true;
 	}
 
-
+    /// <summary>
+    /// Si le joueur est frappé par une balles : on l'immobilise
+    /// </summary>
+    /// <param name="collision"></param>
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "Ball" && photonView.owner != null)
@@ -87,7 +90,9 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// Ici on check les touches pressés si le joeuur n'est pas immobilisé
+    /// </summary>
     void Update ()
 	// Handle rotation here to ensure smooth application.
 	{
@@ -152,12 +157,16 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
                 && (grounded || (_climbing)))
             // Handle jumping
             {
-                    target.AddForce( jumpforce * target.transform.up + target.velocity.normalized * directionalJumpFactor, ForceMode.VelocityChange );
-                    onJump();
-                    _climbing = false;
-                    CTRL_Animation.call_anim_trigger("Jump");
-                    timeCantClimbGrab = Time.timeSinceLevelLoad;
-
+                target.AddForce( jumpforce * target.transform.up + target.velocity.normalized * directionalJumpFactor, ForceMode.VelocityChange );
+                onJump();
+                if (_climbing)
+                {
+                    print("ClimbUp");
+                    CTRL_Animation.call_anim_trigger("ClimbUp", "ClimbUp", layer: 2);
+                }
+                else CTRL_Animation.call_anim_trigger("Jump");
+                timeCantClimbGrab = Time.timeSinceLevelLoad;
+                _climbing = false;
             }
             else if (Input.GetKeyDown(KeyCode.LeftControl)
                 && _climbing)
@@ -166,6 +175,7 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
                 CTRL_Animation.call_anim_trigger("Jump");
                 _climbing = false;
                 timeCantClimbGrab = Time.timeSinceLevelLoad;
+                target.AddForce( target.transform.up*-0.1f , ForceMode.VelocityChange );
             }
             else if (Input.GetKey(KeyCode.LeftControl)
                 && !_climbing 
@@ -176,14 +186,19 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
 
                 if (canclimb)
                 {
-                    CTRL_Animation.call_anim_trigger("Climb");
+                    CTRL_Animation.call_anim_trigger("Climb",layer:2);
                     _climbing = true;
                 }
             }
         }
     }
 
-
+    /// <summary>
+    /// On capture un voleur si il se trouve dans la ligne de mire du joueur et que celui ci reste appuyé sur E.
+    /// </summary>
+    /// <param name="thiefTarget"></param>
+    /// <param name="t_thief"></param>
+    /// <returns></returns>
     IEnumerator catchThief(PhotonPlayer thiefTarget, Transform t_thief)
     {
         isCapturingThief = true;
@@ -195,12 +210,12 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
             yield return new WaitForSeconds(0.5f);
             RaycastHit hitInfo = new RaycastHit();
             bool hit = Physics.Raycast(
-                transform.forward * 0.2f + transform.position
+                transform.forward * 0.3f + transform.position
                 , transform.forward
                 , out hitInfo
                 , 1.2f
                 , LayerMask.GetMask("NetEntity"));
-            if (Input.GetKey(KeyCode.F) && hit  && hitInfo.transform==t_thief)
+            if (Input.GetKey(KeyCode.E) && hit  && hitInfo.transform==t_thief)
             {
                 if (Time.timeSinceLevelLoad - timeCatching > durationCatch) waitCatching = false;
                 else print("will be captured in "+(durationCatch - (Time.timeSinceLevelLoad - timeCatching))+"ms");
@@ -220,6 +235,10 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Ici on charge le tir des balles en restant appuyé sur la souris. 
+    /// </summary>
+    /// <returns></returns>
     IEnumerator prepareToThrow()
     {
         _isPrepareToThrow = true;
@@ -230,7 +249,7 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
         {
             if (!Input.GetMouseButton(1) && _isPrepareToThrow)
             {
-                force =  Mathf.Clamp(minThrowForce+((Time.timeSinceLevelLoad - timeHoldingShoot) * throwForceMult), minThrowForce, maxThrowForce);
+                force = Mathf.Clamp(minThrowForce+((Time.timeSinceLevelLoad - timeHoldingShoot) * throwForceMult), minThrowForce, maxThrowForce);
                 //print("Send ball with force = " + force);
                 PhotonNetwork.Instantiate("Hitball"
                 , transform.position + transform.forward * 1.3f + transform.up * 0.2f + transform.right * 0.1f
@@ -249,45 +268,40 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
     }
 
 
-
+    /// <summary>
+    /// Méthode appelé en fin d'instanciation d'un objet sur le réseau
+    /// , on se sert de cette méthode pour récupérer des paramètres.
+    /// </summary>
+    /// <param name="info"></param>
     void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         //object[] objs = photonView.instantiationData; //The instantiate data..
         //bool[] mybools = (bool[])objs[0];   //Our bools!
     }
 
+    /// <summary>
+    /// Ici on gère la physique du personnage en fonction de son état
+    /// </summary>
     void FixedUpdate()
     // Handle movement here since physics will only be calculated in fixed frames anyway
     {
         if (!photonView.isMine) return;
 
-        // ? QUESAT
         if (Time.timeSinceLevelLoad > timeCantMove + durationCantMove && !PhotonNetwork.room.GetAttribute(RoomAttributes.IMMOBILIZEALL, false))
-        {
             PhotonNetwork.player.SetAttribute(PlayerAttributes.ISIMMOBILIZED, false);
-        }
 
-        if (_climbing && !PhotonNetwork.player.GetAttribute(PlayerAttributes.ISIMMOBILIZED, false))
-        {
-            target.drag = 999f;
-        }
-        else if (grounded)
-        {
-            target.drag = groundDrag;
-        }
-        else
-        {
-            target.drag = airDrag;
-        }
+        // On applique le drag approprié
+        if (_climbing && !PhotonNetwork.player.GetAttribute(PlayerAttributes.ISIMMOBILIZED, false)) target.drag = 999f;
+        else if (grounded) target.drag = groundDrag;
+        else target.drag = airDrag;
 
         // MOVE
-        if (!PhotonNetwork.player.GetAttribute(PlayerAttributes.ISIMMOBILIZED, false))
-        {
-            move();
-        }
-       
+        if (!PhotonNetwork.player.GetAttribute(PlayerAttributes.ISIMMOBILIZED, false)) move();
     }
 	
+    /// <summary>
+    /// Mouvement du joueur.
+    /// </summary>
     void move()
     {
         //horizontal
@@ -298,8 +312,6 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
         Vector3 movement = Input.GetAxis("Vertical") * target.transform.forward +
             SidestepAxisInput * target.transform.right;
 
-        // Scale down applied speed if in walk mode
-        // Scale down applied speed if walking backwards
         // + INAIR
         float appliedSpeed = speed
             * (_grounded ? 1f : airmove_mult)
@@ -311,13 +323,12 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
             
             target.AddForce(movement.normalized * appliedSpeed, ForceMode.VelocityChange);
         }
-        else
-        // If we are grounded and don't have significant input, just stop horizontal movement
-        {
-            //target.velocity = new Vector3(0.0f, target.velocity.y, 0.0f);
-        }
     }
 
+
+    /// <summary>
+    /// Appel réseau d'immobilisation
+    /// </summary>
     [PunRPC]
     public void rpc_immobilize()
     {
@@ -333,6 +344,9 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
     }
 
 
+    /// <summary>
+    /// Appel réseau de capture
+    /// </summary>
     [PunRPC]
     public void rpc_capture()
     {

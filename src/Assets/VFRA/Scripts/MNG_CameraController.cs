@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Classe permettant la rotation de la caemra autour d'un objet
+/// </summary>
 public class MNG_CameraController : MonoBehaviour {
 
     new public Camera camera;

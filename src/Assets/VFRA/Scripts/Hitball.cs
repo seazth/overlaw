@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Balle lancé par un joeuur policier
+/// </summary>
 [RequireComponent(typeof(Rigidbody))]
 public class Hitball : Photon.MonoBehaviour
 {

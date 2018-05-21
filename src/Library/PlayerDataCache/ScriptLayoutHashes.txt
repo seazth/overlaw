@@ -149,7 +149,7 @@ e9bdabf9265d758d56f01bb188916fa8 UnityEngine.Networking.dll:UnityEngine.Networki
 9de3a22eca9aefadba2d10d5987cefe3 UnityEngine.SpatialTracking.dll:UnityEngine.SpatialTracking.TrackedPoseDriver
 c2d15b04283157b00cbdbfaf16c18482 Assembly-CSharp.dll:.PickupItemSyncer
 c1df6bba7f7b35a48ac544b9017761dd Assembly-CSharp.dll:.PlayerDiamond
-538960e2f09d90f61268c4041bf74f83 Assembly-CSharp.dll:.MNG_MainMenu
+07b3b4c90634ff9b6cf827f0b26a86a5 Assembly-CSharp.dll:.MNG_MainMenu
 090584907af2e462994cc893ced507b3 Assembly-CSharp.dll:.PhotonRigidbody2DView
 22df741b1a3c6d3b215ca28ad83c5a3f Assembly-CSharp.dll:UnityStandardAssets.ImageEffects.ScreenSpaceAmbientObscurance
 02f0bc5e25b41bdc131009e4484fe1db Assembly-CSharp.dll:cakeslice.Outline
@@ -255,7 +255,7 @@ c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.Spa
 45f3431f0103c41611e8d4eec3d439df UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.SpatialMappingRenderer
 ee8540d1efea9148410a914295c889e3 Assembly-CSharp.dll:.OnJoinedInstantiate
 fe180736ec3bd9cf69fd20bbec04acfb Assembly-CSharp.dll:ExitGames.Demos.DemoAnimator.LoaderAnime
-721d4910bb95935bb60b985353573906 Assembly-CSharp.dll:.MNG_GameManager
+20705349fe31bc93d6ac51471f61a4c6 Assembly-CSharp.dll:.MNG_GameManager
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.OnClickRequestOwnership
 f671a42aea5f34fec6a4450a3668c615 Assembly-CSharp.dll:UnityEngine.PostProcessing.PostProcessingProfile
 6b7f3b627f03aa2dae54ad0ecb0a7d7a Assembly-CSharp.dll:.PhotonLagSimulationGui
@@ -275,7 +275,7 @@ ec0082b40adf3b0930cd87250ffdbf1d Assembly-CSharp.dll:.SupportLogger
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.OnPickedUpScript
 1356b4a6096c35c829823b7e28399030 Assembly-CSharp.dll:.ShowStatusWhenConnecting
 298901e5fd6ccf8cd5b55cb6018e6abe Assembly-CSharp.dll:.PickupItemSimple
-287094e8b23b9d02123880d7e12ef76f Assembly-CSharp.dll:.MNG_CameraController
+be525d60540508a547aac126024e430f Assembly-CSharp.dll:.MNG_CameraController
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:UnityStandardAssets.Water.GerstnerDisplace
 08712033bfb8d4fd2842041f9a20ded7 Assembly-CSharp.dll:.ManualPhotonViewAllocator
 a2d612afa0d90f75edf1d10832a65609 Assembly-CSharp.dll:.JumpAndRunMovement

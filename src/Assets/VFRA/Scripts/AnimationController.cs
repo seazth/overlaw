@@ -1,6 +1,11 @@
 using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Cette classe est repris d'un exemple de photon.
+/// Entièrement recustomisé, cette classe n'est pas assez solide, il faut encore changer les triggers en float pour le contrôleur d'animation Unity.
+/// En effet, les triggers sont très mal développé chez Unity et les transitions d'animations fait bugger toutes les animations rapide de notre jeu.
+/// </summary>
 [RequireComponent(typeof(ThirdPersonControllerNET))]
 public class AnimationController : Photon.MonoBehaviour
 {
@@ -69,14 +74,12 @@ public class AnimationController : Photon.MonoBehaviour
         isPointed = false;
     }
 
-
+    /// <summary>
+    /// On configure les comportements de saut et les variables
+    /// </summary>
     void Start()
-    // Verify setup, configure
     {
-
-        Setup();
-        // Retry setup if references were cleared post-add
-
+        Setup(); // Retry setup if references were cleared post-add
         if (VerifySetup())
         {
             controller = GetComponent<ThirdPersonControllerNET>();
@@ -167,19 +170,22 @@ public class AnimationController : Photon.MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// Ici on regarde si le joueur pointe un autre joueur de son viseur.
+    /// Si c'est le cas, le joueur visé.
+    /// </summary>
     void checkPointingChar()
     {
         if (!photonView.isMine) return;
 
         RaycastHit hitInfo = new RaycastHit();
         bool hit = Physics.Raycast(transform.forward * 0.3f + transform.position, transform.forward, out hitInfo, 3f, LayerMask.GetMask("NetEntity"));
-        if (hit
-            && hitInfo.transform.gameObject.tag == "Player"
+        if (hit && hitInfo.transform.gameObject.tag == "Player"
             && hitInfo.transform.GetComponent<PhotonView>().owner != null)
         {
             int target_tid = hitInfo.transform.GetComponent<PhotonView>().owner.getTeamID();
-            if (//target_tid != PhotonNetwork.player.getTeamID() && 
-                (target_tid == 1 || target_tid == 2))
+            if (target_tid == 1 || target_tid == 2)
             {
                 if (charpointed != hitInfo.transform.GetComponent<AnimationController>())
                 {
@@ -195,6 +201,15 @@ public class AnimationController : Photon.MonoBehaviour
     //--------------------//
 
     string lasttrigger="";
+    /// <summary>
+    /// Cette méthode permet de faire la gestion de l'animator d'Unity
+    /// et de gérer correctement les couches d'animations sur l'avatar du joueur.
+    /// Ici on remet zero le trigger concerné  a chaque nouvelle animation afin d'éviter
+    /// des bugs liés aux doubles appels d'animations.
+    /// </summary>
+    /// <param name="trigger"></param>
+    /// <param name="statename"></param>
+    /// <param name="layer"></param>
     void SetAnimTrigger( string trigger,string statename = null, int layer=0)
     {
         _animator.ResetTrigger(lasttrigger); // SUPER IMPORTANT
@@ -206,11 +221,21 @@ public class AnimationController : Photon.MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Appelle la synchronisation des animations dans le réseau.
+    /// </summary>
+    /// <param name="trigger"></param>
+    /// <param name="statename"></param>
+    /// <param name="layer"></param>
     public void call_anim_trigger(string trigger, string statename = null, int layer = 0)
     {
         photonView.RPC("rpc_anim_trigger", PhotonTargets.All, new object[] { trigger ,statename,layer});
     }
 
+    /// <summary>
+    /// Applique l'animation appelé sur le réseau.
+    /// </summary>
+    /// <param name="parameters"></param>
     [PunRPC]
     public void rpc_anim_trigger(object[] parameters)
     {
@@ -221,14 +246,5 @@ public class AnimationController : Photon.MonoBehaviour
         {
             SetAnimTrigger(triggername, statename, layer);
         }
-    }
-
-    //----------------//
-
-
-    void LateUpdate ()
-	// Apply directional rotation of lower body
-	{
-        
     }
 }

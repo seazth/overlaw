@@ -52,7 +52,9 @@ public class MNG_Multiplayer : MonoBehaviour {
     public Button Btn_Multiplayer;
     public InputField Input_Pseudo;
 
-
+    /// <summary>
+    /// On commence par appliquer une configuration réseau par défaut et on essaye de s'y connecter.
+    /// </summary>
     void Start () {
 
         loadConnectionsPresets();
@@ -61,6 +63,9 @@ public class MNG_Multiplayer : MonoBehaviour {
         tryLoggingtoMaster();
     }
 	
+    /// <summary>
+    /// Ici on mets à jour la vision du statut de connexion à ¨Photon
+    /// </summary>
 	void Update () {
         string context = ""
             + (PhotonNetwork.inRoom ? " inRoom" : "")
@@ -70,6 +75,9 @@ public class MNG_Multiplayer : MonoBehaviour {
         text_ConnectionState.text = (context!=""?"["+ context + " ] ":"") + PhotonNetwork.networkingPeer.State.ToString();
     }
 
+    /// <summary>
+    /// Méthode de tentative de connexion au serveur de Photon.
+    /// </summary>
     public void tryLoggingtoMaster()
     {
         if (!PhotonNetwork.connected)
@@ -90,9 +98,12 @@ public class MNG_Multiplayer : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Aide visuel par F2 pour la room du joueur.
+    /// </summary>
     void OnGUI()
     {
-        if (Input.GetKey(KeyCode.F1) && PhotonNetwork.inRoom)
+        if (Input.GetKey(KeyCode.F2) && PhotonNetwork.inRoom)
         {   
             Rect centeredRect = new Rect(5, 45, Screen.width-10, (PhotonNetwork.playerList.Length+ MNG_GameManager.getTeams.Length+4) * 14 + 20);
 
@@ -106,7 +117,7 @@ public class MNG_Multiplayer : MonoBehaviour {
                         + (PhotonNetwork.room.GetAttribute<bool>(RoomAttributes.PLAYERSCANSPAWN, false) ? " PLAYERSCANSPAWN" : "")
                         + (PhotonNetwork.room.GetAttribute<bool>(RoomAttributes.PRISONOPEN, false) ? " PRISONOPEN" : "")
                         + (PhotonNetwork.room.GetAttribute<bool>(RoomAttributes.IMMOBILIZEALL, false) ? " IMMOBILIZEALL" : "")
-                        + " TS="+ (int)Time.timeSinceLevelLoad
+                        + " TS="+ (int)PhotonNetwork.ServerTimestamp
                         + " Ping: " + PhotonNetwork.GetPing()+"ms"
                         + "\n";
                 foreach (PhotonPlayer p in PhotonNetwork.playerList)
@@ -130,12 +141,6 @@ public class MNG_Multiplayer : MonoBehaviour {
                         + "\n";
                 }
                 tmp += "\n";
-                for (int tid = 0; tid < MNG_GameManager.getTeams.Length; tid++)
-                {
-                    tmp +=
-                        "TEAM > " + MNG_GameManager.getTeams[tid].TeamName
-                        + "\n";
-                }
                 // AFICHER TEAM ICI
                 GUILayout.Label(tmp);
             }
@@ -143,6 +148,10 @@ public class MNG_Multiplayer : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Méthode qui modifie le preset de connection. Avec IP Port Socket.
+    /// </summary>
+    /// <param name="value"></param>
     public void onNewConnectionPreset(int value)
     {
         MS_adress = ConnectionsPreset[value].protocolAdress;
@@ -179,6 +188,9 @@ public class MNG_Multiplayer : MonoBehaviour {
 
     }
 
+    /// <summary>
+    /// Ici on créé la liste dans l'interface du jeu.
+    /// </summary>
     public void loadConnectionsPresets()
     {
         List<Dropdown.OptionData> ops = new List<Dropdown.OptionData>();
@@ -192,7 +204,6 @@ public class MNG_Multiplayer : MonoBehaviour {
         Input_Pseudo.interactable = false;
 
     }
-
     void OnConnectedToServer(){ }
     void OnServerInitialized(){}
     void OnDisconnectedFromServer(NetworkDisconnection info){}
@@ -200,17 +211,13 @@ public class MNG_Multiplayer : MonoBehaviour {
     void OnFailedToConnectToMasterServer(NetworkConnectionError error){
         Btn_Multiplayer.interactable = false;
         Input_Pseudo.interactable = false;
-
     }
     void OnPlayerConnected(NetworkPlayer player){}
     void OnPlayerDisconnected(NetworkPlayer player){ }
     void OnDisconnectedFromPhoton(){Debug.LogWarning("OnDisconnectedFromPhoton");}
-    //PhotonNetwork.insideLobby ?
     public void LeaveRoom() { if (PhotonNetwork.room != null) PhotonNetwork.LeaveRoom(); }
     public void DisconnectFromServer() { if (PhotonNetwork.Server == ServerConnection.GameServer) PhotonNetwork.Disconnect(); }
     public void DisconnectFromMaster() { if (PhotonNetwork.Server == ServerConnection.MasterServer) PhotonNetwork.Disconnect(); }
-    //public void OnPhotonPlayerDisconnected(PhotonPlayer otherPlayer)  { print("OnPhotonPlayerDisconnected"); }
-    //public void OnPhotonPlayerConnected(PhotonPlayer newPlayer) { print("OnPhotonPlayerConnected"); }
 
     IEnumerator OnLeftRoom()
     {
@@ -222,7 +229,6 @@ public class MNG_Multiplayer : MonoBehaviour {
     {
         print("OnJoinedRoom");
         Network.sendRate = 100;
-        //Camera.main.farClipPlane = 1000; //Main menu set this to 0.4 for a nicer BG 
     }
     public void OnCreatedRoom()
     {
@@ -236,6 +242,10 @@ public class MNG_Multiplayer : MonoBehaviour {
         PhotonNetwork.playerName = value;
         Input_Pseudo.text = value;
     }
+
+    /// <summary>
+    /// Une fois la connection établie : On affecte un nom au joueur et on authorise le joueur à se connecter à un serveur.
+    /// </summary>
     public void OnConnectedToMaster()
     {
         Btn_Multiplayer.interactable = true;

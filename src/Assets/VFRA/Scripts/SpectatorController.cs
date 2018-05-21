@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Gestion du joueur spectateur
+/// </summary>
 public class SpectatorController : Photon.MonoBehaviour {
 
     public Rigidbody _rigidbody;
@@ -24,6 +27,13 @@ public class SpectatorController : Photon.MonoBehaviour {
     }
     void Update () {
 	}
+
+
+    /// <summary>
+    /// Ce sont des classes non opérationnels qui permettent de suivre un joueur dans une session en cours
+    /// </summary>
+    /// <param name="player"></param>
+    /// <param name="go"></param>
     public void followPlayer(PhotonPlayer player, GameObject go) { StartCoroutine(followPlayerGO(player, go)); }
     public IEnumerator followPlayerGO(PhotonPlayer player, GameObject go)
     {
@@ -38,7 +48,9 @@ public class SpectatorController : Photon.MonoBehaviour {
         followedGO = null;
     }
 
-
+    /// <summary>
+    /// Gestion des déplacements
+    /// </summary>
     private void FixedUpdate()
     {
         if (isFollowing) return;

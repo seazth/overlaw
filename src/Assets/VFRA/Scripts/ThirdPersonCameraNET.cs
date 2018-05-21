@@ -1,7 +1,9 @@
 using UnityEngine;
 using System.Collections;
 
-
+/// <summary>
+/// Gestion de la camera du joueur flics et voleurs
+/// </summary>
 public class ThirdPersonCameraNET : MonoBehaviour
 {
 	public Collider target;

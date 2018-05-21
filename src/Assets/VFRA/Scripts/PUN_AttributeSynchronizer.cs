@@ -3,7 +3,9 @@ using System.Collections;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 /// <summary>
-/// CLASSES STATQUES CREE POUR GERER LES ATTRIBUTS SYNCHRONYSEE DANS LE MULTIJOUEUR
+/// CLASSES STATIQUES CREE POUR GERER LES ATTRIBUTS SYNCHRONYSEES DANS LE MULTIJOUEUR.
+/// C'est le Graal de la gestion des attributs multijoueurs, tout transite par des énumérables pour éviter
+/// les problèmes de syntaxe et la synchronisation est éffectué par une table de hashage concu par photon.
 /// </summary>
 public class PUN_AttributeSynchronizer : Photon.MonoBehaviour
 {

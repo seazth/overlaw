@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Cette ouvre la porte de prison dans le jeu.
+/// </summary>
 public class PrisonDoor : MonoBehaviour {
     public bool Opened = false;
     static Quaternion quatDest = Quaternion.Euler(new Vector3(0, 120, 0));

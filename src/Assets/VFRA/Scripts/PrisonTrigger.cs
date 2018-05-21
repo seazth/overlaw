@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+
+/// <summary>
+/// Un systeme de zone permettant l'interaction avec la prison et les joueurs
+/// </summary>
 public class PrisonTrigger : MonoBehaviour {
 
     public const string forTaggedGO = "Player";
@@ -25,8 +29,6 @@ public class PrisonTrigger : MonoBehaviour {
                 && player.GetAttribute<bool>(PlayerAttributes.HASSPAWNED, false)
                 && player.GetPlayerState() == PlayerState.inGame)
             {
-                
-
                 int tid = player.getTeamID();
                 if (tid == 1 || tid == 2)
                 {

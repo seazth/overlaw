@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
-
+/// <summary>
+/// Permet de faire un fondu transparent d'un modèle lorsque la Camera est trop proche de celui ci.
+/// </summary>
 public class CloseCameraFade : MonoBehaviour
 {
 	new public Camera camera;
@@ -8,12 +10,10 @@ public class CloseCameraFade : MonoBehaviour
 	new public Renderer renderer;
 	public float fadeDistance = 1.0f, hideDistance = 0.2f;
 	
-	
 	void Reset ()
 	{
 		Setup ();
 	}
-	
 	
 	void Setup ()
 	{
@@ -32,7 +32,6 @@ public class CloseCameraFade : MonoBehaviour
 			camera = Camera.main;
 		}
 	}
-	
 	
 	void Start ()
 	{

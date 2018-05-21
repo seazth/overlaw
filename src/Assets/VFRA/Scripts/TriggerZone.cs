@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Classe permettant de reconnaitre les joueurs qui passent dans une zone de jeu
+/// </summary>
 public class TriggerZone : Photon.MonoBehaviour {
     public string zoneName = "Undefined";
     public string forTaggedGO = "Player";

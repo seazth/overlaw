@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Synchronise les déplacements d'un objet sur le réseau
+/// </summary>
 [RequireComponent(typeof(Rigidbody))]
 public class PUN_Synchroniser : Photon.MonoBehaviour
 {

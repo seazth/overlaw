@@ -143,22 +143,22 @@ public class AnimationController : Photon.MonoBehaviour
         {
             canLand = true;
         }
-        if (photonView.isMine && photonView.owner !=null && photonView.owner.GetAttribute(PlayerAttributes.ISIMMOBILIZED, false))
+        if (photonView && photonView.owner !=null && photonView.owner.GetAttribute(PlayerAttributes.ISIMMOBILIZED, false))
         {
-            call_anim_trigger("Confuse");
+            SetAnimTrigger("Confuse");
         }
         else if (state == CharacterState.Normal && !PhotonNetwork.player.GetAttribute(PlayerAttributes.ISIMMOBILIZED, false))
         { 
             Vector3 movement = HorizontalMovement;
             float angle = Vector3.Angle(movement, transform.forward);
             if (movement.magnitude < walkSpeed)
-                call_anim_trigger("Idle");
+                SetAnimTrigger("Idle");
             else if (angle > 45f && angle < 135f)
-                call_anim_trigger("Strafe");
+                SetAnimTrigger("Strafe");
             else if (movement.magnitude < runSpeed )
-                call_anim_trigger("Walk");
+                SetAnimTrigger("Walk");
             else
-                call_anim_trigger("Run"); 
+                SetAnimTrigger("Run"); 
         } 
         checkPointingChar();
 

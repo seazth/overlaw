@@ -150,7 +150,7 @@ public class MNG_GameManager : Photon.MonoBehaviour
     /// </summary>
     public void UpdateTimer()
     {
-        int timeleft = (int)(PhotonNetwork.ServerTimestamp - PhotonNetwork.room.GetAttribute(RoomAttributes.TIMEROUNDSTARTED, PhotonNetwork.ServerTimestamp))/1000;
+        int timeleft = durationRound/1000 - (int)(PhotonNetwork.ServerTimestamp - PhotonNetwork.room.GetAttribute(RoomAttributes.TIMEROUNDSTARTED, PhotonNetwork.ServerTimestamp))/1000;
         if (PhotonNetwork.room.GetRoomState() == GameState.RoundRunning)
             text_Timer.text = (timeleft/60) +"m "+(timeleft%60) +"s";
         else
@@ -176,11 +176,11 @@ public class MNG_GameManager : Photon.MonoBehaviour
     /// </summary>
     public void DestroyThiefZones()
     {
-        for (int i = 0; i < ActiveZonesList.Count; i++)
+        foreach (var item in ActiveZonesList)
         {
-            PhotonNetwork.Destroy(ActiveZonesList[0].GetPhotonView());
-            ActiveZonesList.RemoveAt(0);
+            if(item!=null) PhotonNetwork.Destroy(item.GetPhotonView());
         }
+        ActiveZonesList.Clear();
     }
 
     /// <summary>
@@ -477,7 +477,7 @@ public class MNG_GameManager : Photon.MonoBehaviour
         DestroyThiefZones();
 
         //SETUP WINNER PANEL
-        if (PhotonNetwork.room.GetTeamAttribute(winnerTeamId, TeamAttributes.ROUNDSWON,0) == 3 )
+        if (winnerTeamId!=0 && PhotonNetwork.room.GetTeamAttribute(winnerTeamId, TeamAttributes.ROUNDSWON,0) == 3 )
         {
             StartCoroutine(FinalizeGame(winnerTeamId));
             yield break;
@@ -522,7 +522,7 @@ public class MNG_GameManager : Photon.MonoBehaviour
     [PunRPC]
     public void rpc_callWinner(int teamid,bool wintype)
     {
-        if (wintype)
+        if (!wintype)
         {
             teamList[teamid].panel_winround.SetActive(true);
             Invoke("CloseEndPanels", 5f);
@@ -791,6 +791,8 @@ public class MNG_GameManager : Photon.MonoBehaviour
         teamList[1].panel_winround.SetActive(false);
         teamList[2].panel_wingame.SetActive(false);
         teamList[2].panel_winround.SetActive(false);
+        teamList[0].panel_wingame.SetActive(false);
+        teamList[0].panel_winround.SetActive(false);
     }
 
 }

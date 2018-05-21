@@ -56,6 +56,12 @@ public static class RoomAttributesExtension
         object attr; if (room.CustomProperties.TryGetValue("TEAM" + teamID + "/" + teamAttribute.ToString(), out attr)) return (T)attr; return defaultValue;
     }
 
+    public static void AddTeamScore(this Room room, int teamID,int value)
+    {
+        PhotonNetwork.room.SetTeamAttribute(teamID, TeamAttributes.SCORE, PhotonNetwork.room.GetTeamAttribute(teamID, TeamAttributes.SCORE,0)+ value);
+    }
+
+
     public static bool isGameOwner(this PhotonPlayer player) { return PhotonNetwork.inRoom && player.IsMasterClient; }
     public static bool isGameAdmin(this PhotonPlayer player) { return PhotonNetwork.inRoom && player.GetAttribute<bool>(PlayerAttributes.ISROOMADMIN, false); }
     public static void SetRoomState(this Room room, GameState state) { room.SetAttribute(RoomAttributes.GAMESTATE, (int)state); }
@@ -88,5 +94,14 @@ public static class PlayerAttributesExtension
     public static T GetAttribute<T>(this PhotonPlayer player, PlayerAttributes playerAttibute, T defaultValue)
     {
         object attr; if (player.CustomProperties.TryGetValue(playerAttibute.ToString(), out attr)) return (T)attr; return defaultValue;
+    }
+
+    public static void AddPlayerScore(this PhotonPlayer player,int value)
+    {
+        player.SetAttribute(PlayerAttributes.SCORE, player.GetAttribute(PlayerAttributes.SCORE, 0) + value);
+    }
+    public static void AddPlayerCaptureScore(this PhotonPlayer player, int value)
+    {
+        player.SetAttribute(PlayerAttributes.CAPTURESCORE, player.GetAttribute(PlayerAttributes.CAPTURESCORE, 0) + value);
     }
 }

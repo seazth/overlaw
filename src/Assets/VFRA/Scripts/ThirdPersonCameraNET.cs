@@ -41,8 +41,7 @@ public class ThirdPersonCameraNET : MonoBehaviour
 	private const float movementThreshold = 0.1f, rotationThreshold = 0.1f;
 		// Tweak these to adjust camera responsiveness
 	private const float groundedDistance = 0.5f;
-		// Tweak if the camera goes into ground mode too soon or late
-		
+    // Tweak if the camera goes into ground mode too soon or late
 		
 	private Vector3 lastStationaryPosition;
 	private float optimalDistance, targetDistance;

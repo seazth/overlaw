@@ -10,7 +10,7 @@ public class ThiefZonePoint : Photon.MonoBehaviour
 
     public string zoneName = "Undefined";
     public string forTaggedGO = "Player";
-    public int point = 1;
+    public int PointGenere = 1;
     MNG_GameManager Manager_game;
 
     public void Start()
@@ -32,12 +32,13 @@ public class ThiefZonePoint : Photon.MonoBehaviour
                 int team = player.getTeamID();                        //verification de l'équipe du joueur present dans la zone
                 if (team == 1)
                 {
-                    int score = player.GetAttribute<int>(PlayerAttributes.SCORE, 0);
-                    int scoreT = PhotonNetwork.room.GetTeamAttribute<int>(team, TeamAttributes.SCORE, 0);// attribution du point au joueurs et à l'équipe
-                    score += point;
-                    scoreT += point;
-                    player.SetAttribute(PlayerAttributes.SCORE, score);
-                    PhotonNetwork.room.SetTeamAttribute(team, TeamAttributes.SCORE, scoreT);
+
+                    if (PhotonNetwork.room.GetRoomState() == GameState.RoundRunning)
+                    {
+                        player.AddPlayerScore(PointGenere);
+                        PhotonNetwork.room.AddTeamScore(1, PointGenere);
+                    }
+
                     Manager_game.ZonesList.Remove(gameObject);
                     PhotonNetwork.Destroy(GetComponent<PhotonView>());        //destruction de la zone
 

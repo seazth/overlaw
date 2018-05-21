@@ -48,6 +48,9 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
         ;
     AnimationController CTRL_Animation;
 
+    private const int CapturePoint = 1;
+
+
     public bool grounded {
         get {
             _grounded = Physics.CheckSphere(target.transform.position + target.transform.up * -groundedCheckOffset, groundedDistance, groundLayers);
@@ -121,7 +124,6 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
             }
 
             if (Input.GetMouseButton(1)
-                && PhotonNetwork.player.getTeamID() == 2
                 && Time.timeSinceLevelLoad - timeCantShoot > durationCantShoot
                 && !_isPrepareToThrow
                 && !_climbing)  // you can only throw a ball when you're a cop
@@ -146,7 +148,6 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
                     PhotonPlayer thiefInCatch = hitInfo.transform.GetComponent<PhotonView>().owner;
                     if (thiefInCatch != null && thiefInCatch.getTeamID() == 1)
                     {
-                        print("try capturing !");
                         StartCoroutine(catchThief(thiefInCatch, hitInfo.transform));
                     }
                 }
@@ -161,7 +162,6 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
                 onJump();
                 if (_climbing)
                 {
-                    print("ClimbUp");
                     CTRL_Animation.call_anim_trigger("ClimbUp", "ClimbUp", layer: 2);
                 }
                 else CTRL_Animation.call_anim_trigger("Jump");
@@ -218,7 +218,6 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
             if (Input.GetKey(KeyCode.E) && hit  && hitInfo.transform==t_thief)
             {
                 if (Time.timeSinceLevelLoad - timeCatching > durationCatch) waitCatching = false;
-                else print("will be captured in "+(durationCatch - (Time.timeSinceLevelLoad - timeCatching))+"ms");
             }
             else
             {
@@ -228,6 +227,13 @@ public class ThirdPersonControllerNET : Photon.MonoBehaviour
         }
         if (isCapturingThief)
         {
+            if (PhotonNetwork.room.GetRoomState() == GameState.RoundRunning)
+            {
+                PhotonNetwork.player.AddPlayerScore(CapturePoint);
+                PhotonNetwork.player.AddPlayerCaptureScore(1);
+                PhotonNetwork.room.AddTeamScore(PhotonNetwork.player.getTeamID(), CapturePoint);
+            }
+
             ChatVik.SendRoomMessage(PhotonNetwork.player.NickName + " has captured " + thiefTarget.NickName);
             thiefTarget.SetAttribute(PlayerAttributes.ISCAPTURED, true);
             t_thief.GetComponent<PhotonView>().RPC("rpc_capture", PhotonTargets.All);

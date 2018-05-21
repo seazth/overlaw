@@ -178,7 +178,6 @@ c30a52d6f84e35962d1058c286155615 Assembly-CSharp.dll:.ChatVik
 362c847978adb9cef4966ca1c5403c2b Assembly-CSharp.dll:.MoveCam
 a2efb0db652b8114d1ae7dd9a600d626 Assembly-CSharp.dll:UnityStandardAssets.CrossPlatformInput.InputAxisScrollbar
 fe76270bd84ec3b6f2f6f92c69cf69da Assembly-CSharp.dll:UnityStandardAssets.CrossPlatformInput.AxisTouchButton
-05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.CTRL_SinglePlayer
 4ce2b1853c9a392b036a6a654be90ccb Assembly-CSharp.dll:.OnClickInstantiate
 a7a85e3660316548e6df72942099a49d Assembly-CSharp.dll:.MessageOverlay
 a7d3c6c6948d99dd4116e659ddcf5ac4 Assembly-CSharp.dll:UnityStandardAssets.CrossPlatformInput.ButtonHandler
@@ -255,7 +254,7 @@ c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.Spa
 45f3431f0103c41611e8d4eec3d439df UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.SpatialMappingRenderer
 ee8540d1efea9148410a914295c889e3 Assembly-CSharp.dll:.OnJoinedInstantiate
 fe180736ec3bd9cf69fd20bbec04acfb Assembly-CSharp.dll:ExitGames.Demos.DemoAnimator.LoaderAnime
-20705349fe31bc93d6ac51471f61a4c6 Assembly-CSharp.dll:.MNG_GameManager
+fb7a7d826c85a01a1a0f58297b7de240 Assembly-CSharp.dll:.MNG_GameManager
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.OnClickRequestOwnership
 f671a42aea5f34fec6a4450a3668c615 Assembly-CSharp.dll:UnityEngine.PostProcessing.PostProcessingProfile
 6b7f3b627f03aa2dae54ad0ecb0a7d7a Assembly-CSharp.dll:.PhotonLagSimulationGui

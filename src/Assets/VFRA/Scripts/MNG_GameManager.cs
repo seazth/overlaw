@@ -54,7 +54,8 @@ public class MNG_GameManager : Photon.MonoBehaviour
     public static PlayerInitializer PlayerAvatar;
     public GameObject MainMenuCameraRoot;
 
-
+    //SCORING
+    public int PointGenereParPrisonnier = 5;
 
     private void Awake()
     {
@@ -95,7 +96,6 @@ public class MNG_GameManager : Photon.MonoBehaviour
     { // IF NEED MASTERCLIENT LIKE KF Game = PhotonNetwork.playerList.AsEnumerable().Any(c => c.IsMasterClient && c.GetAttribute(PlayerAttributes.ISREADY, false))
         return PhotonNetwork.playerList.AsEnumerable().Count(c => ((c.getTeamID() == 1 || c.getTeamID() == 2) && c.GetAttribute(PlayerAttributes.ISREADY, false))) >= minPlayers;
     }
-
 
     void Update ()
     {
@@ -305,6 +305,10 @@ public class MNG_GameManager : Photon.MonoBehaviour
         // AFFICHAGE DU NOMBRE DE MANCHE GAGNEE POUR CHAQUE EQUIPE
         teamList[1].txt_roundswon.text = PhotonNetwork.room.GetTeamAttribute(1, TeamAttributes.ROUNDSWON, 0).ToString();
         teamList[2].txt_roundswon.text = PhotonNetwork.room.GetTeamAttribute(2, TeamAttributes.ROUNDSWON, 0).ToString();
+
+        // AFFICHAGE DU SCORE PAR EQUIPE 
+        teamList[1].txt_tscore.text = PhotonNetwork.room.GetTeamAttribute(1, TeamAttributes.SCORE, 0).ToString();
+        teamList[2].txt_tscore.text = PhotonNetwork.room.GetTeamAttribute(2, TeamAttributes.SCORE, 0).ToString();
     }
     string getPlayerStrState(PhotonPlayer player)
     {
@@ -312,7 +316,6 @@ public class MNG_GameManager : Photon.MonoBehaviour
     }
 
     //============================================================================================//
-    //===========================================================//
 
     /// <summary>
     /// Cette méthode vérifie l'état de jeu dans une session en cours.
@@ -325,11 +328,7 @@ public class MNG_GameManager : Photon.MonoBehaviour
         if (PhotonNetwork.playerList.Where(s => s.getTeamID() == 1 && s.GetAttribute(PlayerAttributes.HASSPAWNED, false)).All(s => s.GetAttribute(PlayerAttributes.ISCAPTURED, false)))
         {
             PhotonNetwork.room.SetAttribute(RoomAttributes.ALLTHIEFCATCHED, true);
-            ChatVik.SendRoomMessage("Cops catch all thiefs !");
-        }
-        if (PhotonNetwork.room.GetAttribute(RoomAttributes.ALLTHIEFCATCHED, false))
-        {
-            ChatVik.SendRoomMessage("COPS WIN THE ROUND");
+            ChatVik.SendRoomMessage("COPS CATCH ALL THIEVES AND WIN THE ROUND");
             PhotonNetwork.room.SetTeamAttribute(2, TeamAttributes.ROUNDSWON, PhotonNetwork.room.GetTeamAttribute(2, TeamAttributes.ROUNDSWON, 0) + 1);
             foreach (PhotonPlayer p in PhotonNetwork.playerList.Where(s => s.getTeamID() == 1 || s.getTeamID() == 2))
                 p.SetAttribute(PlayerAttributes.ISIMMOBILIZED, true);
@@ -338,13 +337,43 @@ public class MNG_GameManager : Photon.MonoBehaviour
         }
         else if (PhotonNetwork.ServerTimestamp - PhotonNetwork.room.GetAttribute(RoomAttributes.TIMEROUNDSTARTED, PhotonNetwork.ServerTimestamp) > durationRound)
         {
-            ChatVik.SendRoomMessage("THIEVES WIN THE ROUND");
-            PhotonNetwork.room.SetTeamAttribute(1, TeamAttributes.ROUNDSWON, PhotonNetwork.room.GetTeamAttribute(1, TeamAttributes.ROUNDSWON, 0) + 1);
+            int tid_winner = CalculateScores();
+            switch (tid_winner)
+            {
+                case 1: 
+                    ChatVik.SendRoomMessage("THIEVES WIN THE ROUND");
+                    PhotonNetwork.room.SetTeamAttribute(tid_winner, TeamAttributes.ROUNDSWON, PhotonNetwork.room.GetTeamAttribute(1, TeamAttributes.ROUNDSWON, 0) + 1);
+                    break;
+                case 2:
+                    ChatVik.SendRoomMessage("COPS WIN THE ROUND");
+                    PhotonNetwork.room.SetTeamAttribute(tid_winner, TeamAttributes.ROUNDSWON, PhotonNetwork.room.GetTeamAttribute(1, TeamAttributes.ROUNDSWON, 0) + 1);
+                    break;
+                case 0:
+                    ChatVik.SendRoomMessage("DRAW !");
+                    break;
+            }
+            
             foreach (PhotonPlayer p in PhotonNetwork.playerList.Where(s => s.getTeamID() == 1 || s.getTeamID() == 2))
                 p.SetAttribute(PlayerAttributes.ISIMMOBILIZED, true);
-            StartCoroutine(FinalizeRound(1));
-
+            StartCoroutine(FinalizeRound(tid_winner));
         }
+    }
+
+    /// <summary>
+    /// Calcul le score en fin de round et retourne l'id de l'équipe gagnante.
+    /// </summary>
+    /// <returns></returns>
+    public int CalculateScores()
+    {
+        // On ajoute un score a chaque joueur capturé en fin de manche
+        foreach (PhotonPlayer player in PhotonNetwork.playerList.Where(x=>x.GetAttribute(PlayerAttributes.ISCAPTURED,false)))
+            PhotonNetwork.room.AddTeamScore(2, PointGenereParPrisonnier);
+
+        print("SCORE : COPS : " + PhotonNetwork.room.GetTeamAttribute(2, TeamAttributes.SCORE, 0));
+        print("SCORE : THIEVES : " + PhotonNetwork.room.GetTeamAttribute(1, TeamAttributes.SCORE, 0));
+        if (PhotonNetwork.room.GetTeamAttribute(1, TeamAttributes.SCORE, 0) > PhotonNetwork.room.GetTeamAttribute(2, TeamAttributes.SCORE, 0)) return 1;
+        else if (PhotonNetwork.room.GetTeamAttribute(1, TeamAttributes.SCORE, 0) < PhotonNetwork.room.GetTeamAttribute(2, TeamAttributes.SCORE, 0)) return 2;
+        else return 0;
     }
 
     /// <summary>
@@ -358,7 +387,13 @@ public class MNG_GameManager : Photon.MonoBehaviour
         InitRoomAttributes(true);
         SetImmobilizeAll(false);
         PhotonNetwork.room.SetAttribute(RoomAttributes.PLAYERSCANSPAWN, true);
-      
+
+        // RESET AFFICHAGE DES EQUIPËS
+        teamList[1].txt_roundswon.text = "-";
+        teamList[2].txt_roundswon.text = "-";
+        teamList[1].txt_tscore.text = "-";
+        teamList[2].txt_tscore.text = "-";
+
         //ECOUTE DU NOMBRE DE JOUEUR READY
         while (!isMinimumPlayersReady()) yield return new WaitForSeconds(1f);
 
@@ -428,19 +463,24 @@ public class MNG_GameManager : Photon.MonoBehaviour
         PhotonNetwork.room.SetRoomState(GameState.isRoundFinishing); // au cas ou
         PhotonNetwork.room.SetAttribute(RoomAttributes.PLAYERSCANSPAWN, false);
         SetImmobilizeAll(true);
-
         for (int i = 0; i < ZonesList.Count; i++)
         {
             PhotonNetwork.Destroy(ZonesList[0].GetPhotonView());
             ZonesList.RemoveAt(0);
         }
-
         //SETUP WINNER PANEL
         if (PhotonNetwork.room.GetTeamAttribute(winnerTeamId, TeamAttributes.ROUNDSWON,0) == 3 )
         {
             StartCoroutine(FinalizeGame(winnerTeamId));
             yield break;
         }
+
+        //RESET DU SCORE DES EQUIPES
+        PhotonNetwork.room.SetTeamAttribute(1, TeamAttributes.SCORE, 0);
+        PhotonNetwork.room.SetTeamAttribute(2, TeamAttributes.SCORE, 0);
+
+        // AFFICHE L'EQUIPE GAGNANTE
+        photonView.RPC("rpc_callWinner", PhotonTargets.All, new object[] { winnerTeamId , false });
 
         // COMPTE A REBOURG AVANT LE DEBUT DU ROUND
         int timeRoundPreparation = PhotonNetwork.ServerTimestamp;
@@ -468,6 +508,21 @@ public class MNG_GameManager : Photon.MonoBehaviour
 
         // INIT DES JOUEURS AU ROUND
         PhotonNetwork.room.SetRoomState(GameState.BeginningRound);
+    }
+
+    [PunRPC]
+    public void rpc_callWinner(int teamid,bool wintype)
+    {
+        if (wintype)
+        {
+            teamList[teamid].panel_winround.SetActive(true);
+            Invoke("CloseEndPanels", 5f);
+        }
+        else
+        {
+            teamList[teamid].panel_wingame.SetActive(true);
+            Invoke("CloseEndPanels", 5f);
+        }
     }
 
     /// <summary>
@@ -513,6 +568,7 @@ public class MNG_GameManager : Photon.MonoBehaviour
 
         //AFFICHAGE WINNER
         ChatVik.SendRoomMessage("TEAM " + (winnerTeamId == 2 ? "COPS" : "THIEVES") + " WIN THE GAME");
+        photonView.RPC("rpc_callWinner", PhotonTargets.All, new object[] { winnerTeamId, true });
 
 
         // COMPTE A REBOURG AVANT LE DEBUT DU ROUND
@@ -559,10 +615,13 @@ public class MNG_GameManager : Photon.MonoBehaviour
         PhotonNetwork.isMessageQueueRunning = true;
     }
 
-    //============================================================================================//
-    //============================================================================================//
 
-    // GESTION SPAWNING
+
+    /*============================================================================================*/
+
+    /// <summary>
+    ///  GESTION SPAWNING DES JOUEURS
+    /// </summary>
     public string playerprefabname_overlaw = "Overlaw_Player";
     public string spectatorPrefabName = "Spectator";
     /// <summary>
@@ -645,7 +704,6 @@ public class MNG_GameManager : Photon.MonoBehaviour
     }
 
     //============================================================================================//
-    //============================================================================================//
 
     void ResetCameraTransform()
     {
@@ -718,6 +776,14 @@ public class MNG_GameManager : Photon.MonoBehaviour
         foreach (PhotonPlayer p in PhotonNetwork.playerList) p.SetAttribute(PlayerAttributes.ISIMMOBILIZED, value);
     }
 
+    public void CloseEndPanels()
+    {
+        teamList[1].panel_wingame.SetActive(false);
+        teamList[1].panel_winround.SetActive(false);
+        teamList[2].panel_wingame.SetActive(false);
+        teamList[2].panel_winround.SetActive(false);
+    }
+
 }
 
 [System.Serializable]
@@ -728,9 +794,11 @@ public struct Team
     public GameObject BtnCheckmark;
     public Button Btn_join;
     public Text txt_roundswon;
+    public Text txt_tscore;
 
     public GameObject panel_winround;
     public GameObject panel_wingame;
+
 
 }
 
